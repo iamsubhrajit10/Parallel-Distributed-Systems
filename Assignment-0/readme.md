@@ -14,4 +14,4 @@ $ gcc -fopenmp -pg -Ofast -o optimizedOutput optimizedCompute.c
 ```
 
 # Execute binary compiled file
-Please find the 'opitmizedOutput' file to be on a linux environment.
+Please find the 'opitmizedOutput' file to be executed on a linux environment.
