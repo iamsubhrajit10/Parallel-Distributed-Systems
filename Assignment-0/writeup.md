@@ -1,4 +1,4 @@
-"A = BC+BD"
+"A = BC+BD",
 Done by Subhrajit (23210106)
 # Language Used
 C
