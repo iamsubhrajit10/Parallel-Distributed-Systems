@@ -72,6 +72,7 @@ $ gprof optimizedOutput gmon.out > analysisOptimized.txt
 ## Profiling
 We find it difficult to profile the openmp parallel code using gprof, as in the profiling data it shows frame_dummy. Instead, to measure the time spent on computing A = BC+BD, we used omp_get_wtime() to measure the time spent. Before adding C and D we captured the starting time, and after the computation (add, transpose, multiply) is done, we captured the ending time.
 We've shown the time spent on computing the A = BC+BD, as well as the overall time spent to execute the whole program.
+However, upon executing the 'scriptCompileRun.sh', you'll find the 'analysisOptimized.txt' file which shows the gprof profiling.
 
 ## Initializing the Matrices
 We've initialized the matrices B, C, and D randomly using the srand(time(NULL)) seeding with rand()%1000.
