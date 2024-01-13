@@ -41,18 +41,22 @@ i.e. A=BC+BD=B(C+D)
 Also, in the conventional matrix multiplication, usually we access the first matrix row-major way, the second matrix in column-major way. To optimize according to the caches, which generally accumulate data row-wise, we've transposed the second matrix for the multiplication so it can be accessed row-major wise.
 So, we added the two matrices C and D with the add() storing the result in C, then we've transposed the C matrix and stored it in D.
 i.e.
+```
 C = C+D
 D = (C)T
+```
 
 ## Multi-threading using OpenMP
 Now we've used multi-threading on multiplication to optimize the performance further.
 We've created 4 threads using openmp, which divides the matrices into 4 blocks (row-wise).
 
 ## Overall execution order
+```
 C = C+D
 D = (C)T
 // Created 4 threads
 A = B*D     // 4 threads performed execution on 4 separate consecutive chunks of rows.
+```
 
 ## gcc flag
 To optimize during compilation, we've used -Ofast gcc flag, and also we've used -fopenmp flag for 'omp.'. To use the gprof profiler, we've included -pg flag too.
