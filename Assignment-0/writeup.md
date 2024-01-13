@@ -5,30 +5,17 @@ C
 
 # Optimized Approach
 ## Results:
-Minimum Time Observed to compute A=BC+BD: 2.560208 seconds
+Minimum Time Observed to compute A=BC+BD: 1.038066 seconds
 
 ### Output Snapshots
 ```
-root@fedora:/media/sf_E_DRIVE/IIT Gandhinagar/2ndSem/Parallel & Distributed Systems/Assignment-0# ./optimizedOutput
+~/Documents/Parallel-Distributed-Systems/Assignment-0 main !3 ?1 > ./scriptCompileRun.sh                                                                                                                                        11:54:20 AM
+Compiling the Optimized Version
+Executing the Optimized Version
 
-Done! 
-Time taken to compute A=BC+BD: 2.819531 seconds
-root@fedora:/media/sf_E_DRIVE/IIT Gandhinagar/2ndSem/Parallel & Distributed Systems/Assignment-0# ./optimizedOutput
-
-Done! 
-Time taken to compute A=BC+BD: 2.592956 seconds
-root@fedora:/media/sf_E_DRIVE/IIT Gandhinagar/2ndSem/Parallel & Distributed Systems/Assignment-0# ./optimizedOutput
-
-Done! 
-Time taken to compute A=BC+BD: 2.721839 seconds
-root@fedora:/media/sf_E_DRIVE/IIT Gandhinagar/2ndSem/Parallel & Distributed Systems/Assignment-0# ./optimizedOutput
-
-Done! 
-Time taken to compute A=BC+BD: 2.669866 seconds
-root@fedora:/media/sf_E_DRIVE/IIT Gandhinagar/2ndSem/Parallel & Distributed Systems/Assignment-0# ./optimizedOutput
-
-Done! 
-Time taken to compute A=BC+BD: 2.560208 seconds
+Done!  
+Time taken to compute A=BC+BD: 1.038066 seconds
+Total execution time for Optimized Version: 1.212235235 second
 ```
 
 
