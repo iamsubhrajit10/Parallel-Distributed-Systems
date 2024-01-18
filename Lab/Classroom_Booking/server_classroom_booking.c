@@ -1,0 +1,432 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <pthread.h>
+
+
+
+#define OK                      0
+#define SLOT_ALREADY_BOOKED    -1
+#define COOL_DOWN_PERIOD       -2
+#define INVALID_REQUEST        -3
+
+#define COOL_DOWN_DELAY        20
+
+#define AVAILABLE               0
+#define NOT_AVAILABLE           1
+
+#define VALID_SLOT_TIME         0
+#define INVALID_SLOT_TIME      -1
+
+#define PORT 8080
+#define NO_OF_ROOMS             5
+#define NO_OF_SLOTS             8
+
+#define VALID_ROOM       0
+#define INVALID_ROOM    -1
+
+pthread_t *tid;
+
+// Declare mutexes
+pthread_mutex_t booking_lock;  
+pthread_mutex_t cancel_lock;  
+pthread_mutex_t write_lock;  
+pthread_mutex_t client_lock;
+
+int clientCount = 0;  // Initialize the client count
+
+
+typedef struct {
+    char req_timestamp[50];
+    char req_type[50];
+    int room_no;
+    char slot_time[50];
+} Record;
+
+struct rooms{
+    int STATUS_CODE;
+    int** room;
+    int** room_booking_timestamp;
+} rooms_status;
+
+void init_rooms(){
+    rooms_status.STATUS_CODE=OK;
+    rooms_status.room = calloc(NO_OF_ROOMS,sizeof(int *));
+    if (rooms_status.room == NULL){
+        printf("\nMemory allocation for rooms failed!\n");
+        exit(-1);
+    }
+    for (int i=0;i<NO_OF_ROOMS;i++){
+        rooms_status.room[i] = (int *)calloc(NO_OF_SLOTS, sizeof(int));
+    }
+    rooms_status.room_booking_timestamp = calloc(NO_OF_ROOMS,sizeof(int *));
+    if (rooms_status.room_booking_timestamp == NULL){
+        printf("\nMemory allocation for room_booking_timestamp failed!\n");
+        exit(-1);
+    }
+    for (int i=0;i<NO_OF_ROOMS;i++){
+        rooms_status.room_booking_timestamp[i] = (int *)calloc(NO_OF_SLOTS, sizeof(int));
+    }
+}
+
+int timeStringToSeconds(const char *timeString) {
+    int hours, minutes, seconds;
+    if (sscanf(timeString, "%d:%d", &hours, &minutes) == 2) {
+        // Convert hours and minutes to seconds
+        seconds = hours * 3600 + minutes * 60;
+        return seconds;
+    } else {
+        // Handle invalid time string
+        return -1;
+    }
+}
+
+
+int isValidTimeSlot(const char *timeSlot) {
+    const char *validTimeSlots[] = {"8:00-9:30", "9:30-11:00", "11:00-12:30", "12:30-14:00", "14:00-15:30", "15:30-17:00", "17:00-18:30", "18:30-20:00"};
+
+    for (int i = 0; i < NO_OF_SLOTS; i++) {
+        if (strcmp(timeSlot, validTimeSlots[i]) == 0) {
+            return VALID_SLOT_TIME;  // The time slot is valid
+        }
+    }
+
+    return INVALID_SLOT_TIME;  // The time slot is not valid
+}
+
+int getSlotNumber(const char *timeSlot){
+    const char *validTimeSlots[8] = {"8:00-9:30", "9:30-11:00", "11:00-12:30", "12:30-14:00", "14:00-15:30", "15:30-17:00", "17:00-18:30", "18:30-20:00"};
+
+    for (int i = 0; i < NO_OF_SLOTS; i++) {
+        if (strcmp(timeSlot, validTimeSlots[i]) == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+char* getSlotTime(int slot_no){
+    switch(slot_no){
+        case 0:
+            return("8:00-09:30");
+            break;
+        case 1:
+            return("9:30-11:00");
+            break;
+        case 2: 
+            return("11:00-12:30");
+            break;
+        case 3: 
+            return("12:30-14:00");
+            break;
+        case 4: 
+            return("14:00-15:30");
+            break;
+        case 5:
+            return("15:30-17:00");
+            break;
+        case 6:
+            return("17:00-18:30");
+            break;
+        case 7:
+            return("18:30-20:00");
+            break;
+        default:
+            printf("Error: getSlotTime()\n");
+            return(NULL);
+    }
+}
+
+int isValidRoomNo(int room_no){
+    if (room_no<0 || room_no >5){
+        return INVALID_ROOM;
+    }
+    return VALID_ROOM;
+}
+
+
+
+int bookRoom(int room_no, char* slot_time, char* req_timestamp){
+    pthread_mutex_lock(&booking_lock);  // Acquire the booking lock
+    int STATUS_CODE=INVALID_REQUEST;
+    // Checking either the requested time slot is valid or room number is valid
+    if (isValidTimeSlot(slot_time)==INVALID_SLOT_TIME || isValidRoomNo(room_no)==INVALID_ROOM){
+        pthread_mutex_unlock(&booking_lock);  // Release the lock
+        return STATUS_CODE;
+    }
+    int slot_no=getSlotNumber(slot_time);
+  
+    room_no--;
+    if (rooms_status.room[room_no][slot_no] == NOT_AVAILABLE){
+        STATUS_CODE = SLOT_ALREADY_BOOKED;
+        pthread_mutex_unlock(&booking_lock);  // Release the lock
+        return STATUS_CODE;
+    }
+    STATUS_CODE = OK;
+    rooms_status.room[room_no][slot_no] = NOT_AVAILABLE;
+    int req_timestamp_seconds= timeStringToSeconds(req_timestamp);
+    rooms_status.room_booking_timestamp[room_no][slot_no] = req_timestamp_seconds;
+    pthread_mutex_unlock(&booking_lock);  // Release the lock
+    return STATUS_CODE;
+}
+
+
+
+int cancelRoom(int room_no, char* slot_time, char* req_timestamp){
+    pthread_mutex_lock(&cancel_lock);  // Acquire the cancel lock
+    int STATUS_CODE=INVALID_REQUEST;
+    // Checking either the requested time slot is valid or room number is valid
+    if (isValidTimeSlot(slot_time)==INVALID_SLOT_TIME || isValidRoomNo(room_no)==INVALID_ROOM){
+
+        pthread_mutex_unlock(&cancel_lock);  // Release the lock
+        return STATUS_CODE;
+    }
+    int slot_no = getSlotNumber(slot_time);
+    room_no--;
+    // Checking if at all the room is booked or not
+    if (rooms_status.room[room_no][slot_no] == AVAILABLE){
+        pthread_mutex_unlock(&cancel_lock);  // Release the lock
+        return STATUS_CODE;
+    }
+    
+    //Checking the cooldown period
+    int seconds1 = timeStringToSeconds(req_timestamp);
+    int seconds2 = rooms_status.room_booking_timestamp[room_no][slot_no];
+ 
+    if (seconds1<=(seconds2+COOL_DOWN_DELAY)){
+        STATUS_CODE = COOL_DOWN_PERIOD;
+        pthread_mutex_unlock(&cancel_lock);  // Release the lock
+        return STATUS_CODE;
+    }
+
+    rooms_status.room[room_no][slot_no] = AVAILABLE;
+    STATUS_CODE = OK;
+    pthread_mutex_unlock(&cancel_lock);  // Release the lock
+    return STATUS_CODE;
+}
+
+struct rooms getRoomsStatus(){
+    rooms_status.STATUS_CODE=OK;
+    return rooms_status;
+}
+
+
+
+void write_csv(int room_no, char req_type, char* slot_time, int status, char *get_msg){
+    pthread_mutex_lock(&write_lock);
+    char* filename="output.csv";
+    FILE *file = fopen(filename, "a");
+    if (file == NULL) {
+        printf("Error opening file %s for writing.\n", filename);
+        return;
+    }
+    switch(req_type){
+        case 'B':
+            fprintf(file,"%s,%d,%s,%d,\n","BOOK",room_no,slot_time,status);
+            break;
+        case 'C':
+            fprintf(file,"%s,%d,%s,%d,\n","CANCEL",room_no,slot_time,status);
+            break;
+        case 'G':
+            fprintf(file,"%s,,,%d,%s\n","GET",status,get_msg);
+            break;
+        default:
+            printf("Error\n");
+    }
+    fclose(file); 
+    pthread_mutex_unlock(&write_lock);
+}
+
+
+void *handleClient(void *arg) {
+    pthread_mutex_lock(&client_lock);
+    int newSocket = *(int *)arg;
+    int req_count=0;
+
+    while (1) {
+        // pthread_mutex_lock(&recv_lock);
+        char buffer[1024];
+        bzero(buffer, sizeof(buffer));
+        ssize_t recvStatus = recv(newSocket, buffer, sizeof(buffer), 0);
+        if (recvStatus <= 0) {
+        // Either an error or the client disconnected
+            if (recvStatus == 0) {
+                printf("Client disconnected.\n");
+            } else {
+                perror("Error in receiving data");
+            }
+            break;
+        }
+        // pthread_mutex_unlock(&recv_lock);
+
+        if (strcmp(buffer, ":exit") == 0) {
+            printf("Client disconnected.\n");
+            break;
+        } else {
+
+            clientCount++;
+            // pthread_mutex_unlock(&client_lock);
+
+
+            // Parse the received data
+            char req_timestamp[50], req_type[50], slot_time[50];
+            int room_no;
+            sscanf(buffer, "%s %s %d %s", req_timestamp, req_type, &room_no, slot_time);
+            // Handle the request based on req_type
+            if (strcmp(req_type, "BOOK") == 0) {
+                int status = bookRoom(room_no, slot_time, req_timestamp);
+                write_csv(room_no,'B',slot_time,status,NULL);
+            } else if (strcmp(req_type, "CANCEL") == 0) {
+                int status = cancelRoom(room_no, slot_time, req_timestamp);
+                write_csv(room_no,'C',slot_time,status,NULL);
+            } else if (strcmp(req_type, "GET") == 0) { 
+                struct rooms st = getRoomsStatus();
+                 // Initial buffer size, you can adjust it based on your data
+                size_t bufferSize = 1024;
+                char* msg = (char*)malloc(bufferSize * sizeof(char));
+                
+                // Initialize the string
+                msg[0] = '\0';
+                
+                for (int i = 0; i < NO_OF_ROOMS; i++) {
+                    for (int j = 0; j < NO_OF_SLOTS; j++) {
+                        if(i==0 && j==0){
+                            snprintf(msg + strlen(msg), bufferSize - strlen(msg), "\"{");
+                        } 
+                        if (rooms_status.room[i][j] == NOT_AVAILABLE) {
+                            if(strcmp(msg,"\"{")==0){
+                                snprintf(msg + strlen(msg), bufferSize - strlen(msg), "('%d', '%s')", i + 1, getSlotTime(j));
+                            }else{
+                                snprintf(msg + strlen(msg), bufferSize - strlen(msg), ", ('%d', '%s')", i + 1, getSlotTime(j));
+                            }
+                        }
+                        if(i==NO_OF_ROOMS-1 && j==NO_OF_SLOTS-1){
+                            snprintf(msg + strlen(msg), bufferSize - strlen(msg), "}\"");
+                        }
+                    }
+                }
+                write_csv(0,'G',NULL,OK,msg);
+            }
+            else {
+                printf("Unknown request type: %s\n", req_type);
+            }
+            // pthread_mutex_lock(&client_lock);
+            clientCount--;
+           
+            bzero(buffer, sizeof(buffer));
+        }
+    }
+    // Close the socket and remove the thread
+    close(newSocket);
+    pthread_mutex_unlock(&client_lock);
+    pthread_exit(NULL);
+}
+
+
+int main() {
+    char* filename="output.csv";
+    FILE *file = fopen(filename, "w");
+    if (file == NULL) {
+        printf("Error opening file %s for writing.\n", filename);
+        return 0;
+    }
+    fprintf(file,"Type,Room,Timeslot,Status,\n");
+    fclose(file);
+    pthread_mutex_init(&booking_lock, NULL);  // Initialize the mutex
+    pthread_mutex_init(&cancel_lock, NULL);  // Initialize the mutex
+    pthread_mutex_init(&client_lock, NULL);
+    pthread_mutex_init(&write_lock, NULL);
+
+    int num_threads = 10000;
+    tid = malloc(num_threads*sizeof(pthread_t));
+    init_rooms();
+    int sockfd, ret;
+    struct sockaddr_in serverAddr;
+    int newSocket;
+    struct sockaddr_in newAddr;
+    socklen_t addr_size;
+
+    // Allocate initial memory for pthreads
+    clientCount = 0;
+
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sockfd < 0) {
+        printf("[-]Error in connection.\n");
+        exit(1);
+    }
+    printf("[+]Server Socket is created.\n");
+
+    memset(&serverAddr, '\0', sizeof(serverAddr));
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_port = htons(PORT);
+    serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+    ret = bind(sockfd, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
+    if (ret < 0) {
+        printf("[-]Error in binding.\n");
+        exit(1);
+    }
+    printf("[+]Bind to port %d\n", PORT);
+
+    if (listen(sockfd, 30000) == 0) {
+        printf("[+]Listening....\n");
+    } else {
+        printf("[-]Error in binding.\n");
+    }
+
+    while (1) {
+        newSocket = accept(sockfd, (struct sockaddr *)&newAddr, &addr_size);
+        if (newSocket < 0) {
+            perror("Accept Failed");
+            continue;
+        }
+        printf("Connection accepted from %s:%d\n", inet_ntoa(newAddr.sin_addr), ntohs(newAddr.sin_port));
+
+        // Reallocate memory for the new client
+        clientCount++;
+        if (clientCount>num_threads){
+            pthread_t *temp_tid = realloc(tid, sizeof(pthread_t) * clientCount);
+            if (temp_tid == NULL) {
+                fprintf(stderr, "Failed to reallocate memory for pthreads.\n");
+                // Handle error and possibly free(tid) here
+                free(tid);
+            } else {
+                tid = temp_tid;
+            }
+        }
+
+        // Create a new socket for the client
+        int *socketPtr = malloc(sizeof(int));
+        *socketPtr = newSocket;
+
+        // Create a new thread to handle the client with its own socket and counter value
+        printf("Client count: %d\n",clientCount);
+        if (pthread_create(&tid[clientCount - 1], NULL, handleClient, socketPtr) != 0) {
+            printf("Failed to create thread.\n");
+        }
+    }
+    for (int i = 0; i < num_threads; i++) {
+        pthread_join(tid[i], NULL);
+    }
+    for (int i = 0; i < sizeof(tid)/sizeof(tid[i]); i++) {
+        free((void*)tid[i]);
+    }
+
+    free(tid);
+    // Free memory for rooms and room_booking_timestamp
+    for (int i = 0; i < NO_OF_ROOMS; i++) {
+        free(rooms_status.room[i]);
+        free(rooms_status.room_booking_timestamp[i]);
+    }
+    free(rooms_status.room);
+    free(rooms_status.room_booking_timestamp);
+
+    close(sockfd);
+
+    return 0;
+}
