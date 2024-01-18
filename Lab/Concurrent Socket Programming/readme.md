@@ -18,6 +18,7 @@ Used lang C.
 $ gcc -o server server_classroom_booking.c -pthread
 $ ./server
 ```
+
  ## Client code:
 ```
 $  gcc -o client client_classroom_booking.c
@@ -25,3 +26,4 @@ $  ./client <file name.csv>
 ```
 
 Note, server runs indefinitely.
+Server writes in the 'output.csv' file.
