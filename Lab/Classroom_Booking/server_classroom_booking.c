@@ -90,7 +90,7 @@ int isValidTimeSlot(const char *timeSlot) {
 
 /* Returns the slot number from 0 to 7 for valid time-slots accordingly, and -1 incase of invalid time slot*/
 int getSlotNumber(const char *timeSlot){
-    const char *validTimeSlots[8] = {"8:00-9:30", "9:30-11:00", "11:00-12:30", "12:30-14:00", "14:00-15:30", "15:30-17:00", "17:00-18:30", "18:30-20:00"};
+    const char *validTimeSlots[8] = {"08:00-09:30", "09:30-11:00", "11:00-12:30", "12:30-14:00", "14:00-15:30", "15:30-17:00", "17:00-18:30", "18:30-20:00"};
 
     for (int i = 0; i < NO_OF_SLOTS; i++) {
         if (strcmp(timeSlot, validTimeSlots[i]) == 0) {
