@@ -8,54 +8,42 @@
 #include <arpa/inet.h>
 #include <pthread.h>
 
-
-
+/* Macros for various return status codes*/
 #define OK                      0
 #define SLOT_ALREADY_BOOKED    -1
 #define COOL_DOWN_PERIOD       -2
 #define INVALID_REQUEST        -3
-
 #define COOL_DOWN_DELAY        20
-
 #define AVAILABLE               0
 #define NOT_AVAILABLE           1
-
 #define VALID_SLOT_TIME         0
 #define INVALID_SLOT_TIME      -1
-
 #define PORT 8080
 #define NO_OF_ROOMS             5
 #define NO_OF_SLOTS             8
+#define VALID_ROOM              0
+#define INVALID_ROOM           -1
 
-#define VALID_ROOM       0
-#define INVALID_ROOM    -1
-
+/* Thread Array*/
 pthread_t *tid;
 
-// Declare mutexes
+/* Mutex variables to handle respective critical sections*/
 pthread_mutex_t booking_lock;  
 pthread_mutex_t cancel_lock;  
 pthread_mutex_t write_lock;  
 pthread_mutex_t client_lock;
 
-int clientCount = 0;  // Initialize the client count
+/* Stores the count of clients connected to server*/
+int clientCount = 0;  
 
-
-typedef struct {
-    char req_timestamp[50];
-    char req_type[50];
-    int room_no;
-    char slot_time[50];
-} Record;
-
+/* Structure for maintaing status of Rooms*/
 struct rooms{
-    int STATUS_CODE;
     int** room;
     int** room_booking_timestamp;
 } rooms_status;
 
+/* Function to initialize the room_status data structure*/
 void init_rooms(){
-    rooms_status.STATUS_CODE=OK;
     rooms_status.room = calloc(NO_OF_ROOMS,sizeof(int *));
     if (rooms_status.room == NULL){
         printf("\nMemory allocation for rooms failed!\n");
@@ -74,6 +62,7 @@ void init_rooms(){
     }
 }
 
+/* Function for converting 24H clock format to seconds. Mainly used for COOLDOWN checking*/
 int timeStringToSeconds(const char *timeString) {
     int hours, minutes, seconds;
     if (sscanf(timeString, "%d:%d", &hours, &minutes) == 2) {
@@ -86,9 +75,9 @@ int timeStringToSeconds(const char *timeString) {
     }
 }
 
-
+/* Returns validity of the time slot passed by the client*/
 int isValidTimeSlot(const char *timeSlot) {
-    const char *validTimeSlots[] = {"8:00-9:30", "9:30-11:00", "11:00-12:30", "12:30-14:00", "14:00-15:30", "15:30-17:00", "17:00-18:30", "18:30-20:00"};
+    const char *validTimeSlots[] = {"08:00-09:30", "09:30-11:00", "11:00-12:30", "12:30-14:00", "14:00-15:30", "15:30-17:00", "17:00-18:30", "18:30-20:00"};
 
     for (int i = 0; i < NO_OF_SLOTS; i++) {
         if (strcmp(timeSlot, validTimeSlots[i]) == 0) {
@@ -99,6 +88,7 @@ int isValidTimeSlot(const char *timeSlot) {
     return INVALID_SLOT_TIME;  // The time slot is not valid
 }
 
+/* Returns the slot number from 0 to 7 for valid time-slots accordingly, and -1 incase of invalid time slot*/
 int getSlotNumber(const char *timeSlot){
     const char *validTimeSlots[8] = {"8:00-9:30", "9:30-11:00", "11:00-12:30", "12:30-14:00", "14:00-15:30", "15:30-17:00", "17:00-18:30", "18:30-20:00"};
 
@@ -110,13 +100,14 @@ int getSlotNumber(const char *timeSlot){
     return -1;
 }
 
+/* Returns the Slot-Time taking the slot number (0-7)*/
 char* getSlotTime(int slot_no){
     switch(slot_no){
         case 0:
-            return("8:00-09:30");
+            return("08:00-09:30");
             break;
         case 1:
-            return("9:30-11:00");
+            return("09:30-11:00");
             break;
         case 2: 
             return("11:00-12:30");
@@ -142,6 +133,7 @@ char* getSlotTime(int slot_no){
     }
 }
 
+/* Returns if the Room no is valid or not*/
 int isValidRoomNo(int room_no){
     if (room_no<0 || room_no >5){
         return INVALID_ROOM;
@@ -149,8 +141,7 @@ int isValidRoomNo(int room_no){
     return VALID_ROOM;
 }
 
-
-
+/* Returns Status code according to the status of booking request made*/
 int bookRoom(int room_no, char* slot_time, char* req_timestamp){
     pthread_mutex_lock(&booking_lock);  // Acquire the booking lock
     int STATUS_CODE=INVALID_REQUEST;
@@ -175,8 +166,7 @@ int bookRoom(int room_no, char* slot_time, char* req_timestamp){
     return STATUS_CODE;
 }
 
-
-
+/* Returns Status code according to the status of cancellation request made*/
 int cancelRoom(int room_no, char* slot_time, char* req_timestamp){
     pthread_mutex_lock(&cancel_lock);  // Acquire the cancel lock
     int STATUS_CODE=INVALID_REQUEST;
@@ -210,13 +200,13 @@ int cancelRoom(int room_no, char* slot_time, char* req_timestamp){
     return STATUS_CODE;
 }
 
+/* Returns Status of all rooms, and while writing to the csv file, it only shows the booked rooms*/
 struct rooms getRoomsStatus(){
-    rooms_status.STATUS_CODE=OK;
     return rooms_status;
 }
 
 
-
+/* Writes to the "output.csv" file*/
 void write_csv(int room_no, char req_type, char* slot_time, int status, char *get_msg){
     pthread_mutex_lock(&write_lock);
     char* filename="output.csv";
@@ -242,7 +232,7 @@ void write_csv(int room_no, char req_type, char* slot_time, int status, char *ge
     pthread_mutex_unlock(&write_lock);
 }
 
-
+/* Handles client threads */
 void *handleClient(void *arg) {
     pthread_mutex_lock(&client_lock);
     int newSocket = *(int *)arg;
