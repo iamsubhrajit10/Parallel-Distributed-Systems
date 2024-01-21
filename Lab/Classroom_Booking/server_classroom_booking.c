@@ -35,6 +35,61 @@ pthread_mutex_t client_lock;
 
 /* Stores the count of clients connected to server*/
 int clientCount = 0;  
+// Structure to represent a client request
+struct Request {
+    int socket;
+    struct Request* next;
+};
+
+// Linked list to manage the request queue
+struct RequestQueue {
+    struct Request* front;
+    struct Request* rear;
+};
+
+// Initialize the request queue
+void initRequestQueue(struct RequestQueue* queue) {
+    queue->front = NULL;
+    queue->rear = NULL;
+}
+
+// Enqueue a new request
+void enqueueRequest(struct RequestQueue* queue, int socket) {
+    struct Request* newRequest = (struct Request*)malloc(sizeof(struct Request));
+    newRequest->socket = socket;
+    newRequest->next = NULL;
+
+    if (queue->rear == NULL) {
+        queue->front = newRequest;
+        queue->rear = newRequest;
+    } else {
+        queue->rear->next = newRequest;
+        queue->rear = newRequest;
+    }
+}
+
+// Dequeue a request
+int dequeueRequest(struct RequestQueue* queue) {
+    if (queue->front == NULL) {
+        return -1; // Queue is empty
+    }
+
+    int socket = queue->front->socket;
+    struct Request* temp = queue->front;
+
+    if (queue->front == queue->rear) {
+        queue->front = NULL;
+        queue->rear = NULL;
+    } else {
+        queue->front = queue->front->next;
+    }
+
+    free(temp);
+    return socket;
+}
+
+// Global request queue
+struct RequestQueue requestQueue;
 
 /* Structure for maintaing status of Rooms*/
 struct rooms{
@@ -173,7 +228,7 @@ int cancelRoom(int room_no, char* slot_time, char* req_timestamp){
     }
     
     //Checking the cooldown period
-    if (atoi(req_timestamp)<=(rooms_status.room_booking_timestamp[room_no][slot_no]+COOL_DOWN_DELAY)){
+    if (atoi(req_timestamp)-1<=(rooms_status.room_booking_timestamp[room_no][slot_no]+COOL_DOWN_DELAY)){
         STATUS_CODE = COOL_DOWN_PERIOD;
         pthread_mutex_unlock(&cancel_lock);  // Release the lock
         return STATUS_CODE;
@@ -225,6 +280,12 @@ void *handleClient(void *arg) {
 
     while (1) {
         // pthread_mutex_lock(&recv_lock);
+        int newSocket = dequeueRequest(&requestQueue);
+        if (newSocket == -1) {
+            // Queue is empty, wait for a while
+            usleep(10000); // Sleep for 10 milliseconds
+            continue;
+        }
         char buffer[1024];
         bzero(buffer, sizeof(buffer));
         ssize_t recvStatus = recv(newSocket, buffer, sizeof(buffer), 0);
@@ -292,12 +353,12 @@ void *handleClient(void *arg) {
             }
             // pthread_mutex_lock(&client_lock);
             clientCount--;
-           
+            close(newSocket);
             bzero(buffer, sizeof(buffer));
         }
     }
     // Close the socket and remove the thread
-    close(newSocket);
+    //close(newSocket);
     pthread_mutex_unlock(&client_lock);
     pthread_exit(NULL);
 }
@@ -316,6 +377,7 @@ int main() {
     pthread_mutex_init(&cancel_lock, NULL);  // Initialize the mutex
     pthread_mutex_init(&client_lock, NULL);
     pthread_mutex_init(&write_lock, NULL);
+    initRequestQueue(&requestQueue);
 
     int num_threads = 10000;
     tid = malloc(num_threads*sizeof(pthread_t));
@@ -356,14 +418,26 @@ int main() {
 
     while (1) {
         newSocket = accept(sockfd, (struct sockaddr *)&newAddr, &addr_size);
+        
         if (newSocket < 0) {
             perror("Accept Failed");
             continue;
         }
         printf("Connection accepted from %s:%d\n", inet_ntoa(newAddr.sin_addr), ntohs(newAddr.sin_port));
-
+        enqueueRequest(&requestQueue, newSocket);
         // Reallocate memory for the new client
         clientCount++;
+
+
+        // Create a new socket for the client
+        int *socketPtr = malloc(sizeof(int));
+        *socketPtr = newSocket;
+
+        // Create a new thread to handle the client with its own socket and counter value
+       // printf("Client count: %d\n",clientCount);
+        if (pthread_create(&tid[clientCount - 1], NULL, handleClient, socketPtr) != 0) {
+            printf("Failed to create thread.\n");
+        }
         if (clientCount>num_threads){
             pthread_t *temp_tid = realloc(tid, sizeof(pthread_t) * clientCount);
             if (temp_tid == NULL) {
@@ -373,16 +447,6 @@ int main() {
             } else {
                 tid = temp_tid;
             }
-        }
-
-        // Create a new socket for the client
-        int *socketPtr = malloc(sizeof(int));
-        *socketPtr = newSocket;
-
-        // Create a new thread to handle the client with its own socket and counter value
-        printf("Client count: %d\n",clientCount);
-        if (pthread_create(&tid[clientCount - 1], NULL, handleClient, socketPtr) != 0) {
-            printf("Failed to create thread.\n");
         }
     }
     for (int i = 0; i < num_threads; i++) {
