@@ -62,18 +62,6 @@ void init_rooms(){
     }
 }
 
-/* Function for converting 24H clock format to seconds. Mainly used for COOLDOWN checking*/
-int timeStringToSeconds(const char *timeString) {
-    int hours, minutes, seconds;
-    if (sscanf(timeString, "%d:%d", &hours, &minutes) == 2) {
-        // Convert hours and minutes to seconds
-        seconds = hours * 3600 + minutes * 60;
-        return seconds;
-    } else {
-        // Handle invalid time string
-        return -1;
-    }
-}
 
 /* Returns validity of the time slot passed by the client*/
 int isValidTimeSlot(const char *timeSlot) {
@@ -160,8 +148,7 @@ int bookRoom(int room_no, char* slot_time, char* req_timestamp){
     }
     STATUS_CODE = OK;
     rooms_status.room[room_no][slot_no] = NOT_AVAILABLE;
-    int req_timestamp_seconds= timeStringToSeconds(req_timestamp);
-    rooms_status.room_booking_timestamp[room_no][slot_no] = req_timestamp_seconds;
+    rooms_status.room_booking_timestamp[room_no][slot_no] = atoi(req_timestamp);
     pthread_mutex_unlock(&booking_lock);  // Release the lock
     return STATUS_CODE;
 }
@@ -176,6 +163,7 @@ int cancelRoom(int room_no, char* slot_time, char* req_timestamp){
         pthread_mutex_unlock(&cancel_lock);  // Release the lock
         return STATUS_CODE;
     }
+    
     int slot_no = getSlotNumber(slot_time);
     room_no--;
     // Checking if at all the room is booked or not
@@ -185,10 +173,7 @@ int cancelRoom(int room_no, char* slot_time, char* req_timestamp){
     }
     
     //Checking the cooldown period
-    int seconds1 = timeStringToSeconds(req_timestamp);
-    int seconds2 = rooms_status.room_booking_timestamp[room_no][slot_no];
- 
-    if (seconds1<=(seconds2+COOL_DOWN_DELAY)){
+    if (atoi(req_timestamp)<=(rooms_status.room_booking_timestamp[room_no][slot_no]+COOL_DOWN_DELAY)){
         STATUS_CODE = COOL_DOWN_PERIOD;
         pthread_mutex_unlock(&cancel_lock);  // Release the lock
         return STATUS_CODE;
