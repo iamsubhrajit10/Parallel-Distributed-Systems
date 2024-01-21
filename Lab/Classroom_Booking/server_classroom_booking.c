@@ -304,11 +304,6 @@ void *handleClient(void *arg) {
             printf("Client disconnected.\n");
             break;
         } else {
-
-            clientCount++;
-            // pthread_mutex_unlock(&client_lock);
-
-
             // Parse the received data
             char req_timestamp[50], req_type[50], slot_time[50];
             int room_no;
@@ -352,13 +347,14 @@ void *handleClient(void *arg) {
                 printf("Unknown request type: %s\n", req_type);
             }
             // pthread_mutex_lock(&client_lock);
-            clientCount--;
+            // Close the socket and remove the thread
             close(newSocket);
+            clientCount--;
+            printf("Current Count of Connected Clients: %d\n",clientCount);
             bzero(buffer, sizeof(buffer));
         }
     }
-    // Close the socket and remove the thread
-    //close(newSocket);
+    
     pthread_mutex_unlock(&client_lock);
     pthread_exit(NULL);
 }
@@ -415,7 +411,7 @@ int main() {
     } else {
         printf("[-]Error in binding.\n");
     }
-
+    printf("Current Count of Clients: %d\n",clientCount);
     while (1) {
         newSocket = accept(sockfd, (struct sockaddr *)&newAddr, &addr_size);
         
@@ -448,6 +444,7 @@ int main() {
                 tid = temp_tid;
             }
         }
+        
     }
     for (int i = 0; i < num_threads; i++) {
         pthread_join(tid[i], NULL);
@@ -466,6 +463,6 @@ int main() {
     free(rooms_status.room_booking_timestamp);
 
     close(sockfd);
-
+    printf("Exited\n");
     return 0;
 }
