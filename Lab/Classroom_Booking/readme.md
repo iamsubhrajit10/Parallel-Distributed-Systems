@@ -7,7 +7,7 @@ In the test case, every second one request is made. The Request Time column is t
 PLEASE NOTE: INPUT CASES SHOULD CONTAIN THE TIME IN 24 HOUR FORMAT. For e.g 08:00 or 09:30
 ```
 Status Codes
-0  - OK
+ 0  - OK
 -1- Slot Already booked
 -2- Cancel request received within the cool down period.
 -3- Invalid Request
