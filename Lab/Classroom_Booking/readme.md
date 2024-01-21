@@ -27,5 +27,5 @@ $  gcc -o client client_classroom_booking.c
 $  ./client <file name.csv>
 ```
 
-Note, server runs indefinitely.
-Server writes in the 'output.csv' file.
+Note, server runs indefinitely. (To stop it, press CTRL+C from terminal)
+Server writes in the 'output.csv' file. (Make sure yoou've closed the file before running the server)
