@@ -39,7 +39,7 @@ A game can consist of both M and F players. In such a case, take game time to be
 
   
 
-The input for the program must be taken from a file (.txt or .csv).   
+The input for the program must be taken from a .csv file.   
 
 **Sample input:**
 
