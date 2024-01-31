@@ -178,4 +178,6 @@ Based upon the preference of the request it does the following:
 	- Otherwise, it inserts the requests on both the Queue
 
 The server, in between the arrival-time gaps, checks if there's any game(s) possible.
-Incase, if the court becomes free, ties between between Singles and Doubles are given over to Doubles.
+Incase, if the court becomes free, ties between Singles and Doubles are given over to Doubles.
+Also, the Queues are maintained according to arrival time. 
+
