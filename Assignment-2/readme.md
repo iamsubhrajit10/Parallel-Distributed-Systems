@@ -172,7 +172,7 @@ $ gcc -o client Client-Tennis.c
 ```
 ### Execution
 ```bash
-$ ./client <input csv file name> <output csv file name?
+$ ./client <input csv file name> <output csv file name>
 ```
 # Explanation
 ## Server-side
