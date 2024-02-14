@@ -214,6 +214,23 @@ The server, in between the arrival-time gaps, checks if there's any game(s) poss
 Incase, if the court becomes free, ties between Singles and Doubles are given over to Doubles.
 Also, the Queues are maintained according to arrival time. 
 
+## Server-side code explanation:
+### Accepting Connections:
+The server waits for incoming connections using the accept function within a loop.
+Upon accepting a connection, it enqueues the client's socket into a request queue for further processing.
+### Handling Clients in Parallel:
+The server handles each client in a separate thread using OpenMP parallelism.
+It creates a thread pool with the number of threads equal to the number of clients.
+Each thread continuously dequeues a client's socket from the request queue and processes it.
+### Client Handling:
+
+The handleClient function is responsible for managing the communication with the client.
+It performs tasks such as receiving data from the client, processing requests, and sending responses.
+### Parallel Execution:
+
+OpenMP directives are used to parallelize the processing of client connections, allowing multiple clients to be handled concurrently.
+
+
 ## Client-side
 The client-code treats each row of the input-csv file independently. It relies on forking child process for each client request, while managing synchronization among the processes using shared-memory IPC, semaphores.
 Client-side Code Explanation:
