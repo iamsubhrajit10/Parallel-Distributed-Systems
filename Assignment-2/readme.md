@@ -36,7 +36,9 @@ Write a program that implements this scenario.
 
 
 A game can consist of both M and F players. In such a case, take game time to be that of a M player.
-
+- The server should return a response to the client only after the match is over.
+- The maximum waiting time for the client to get allotted a match is 30 minutes, after which the client should receive a response indicating the timeout.
+- Each line of the input is an independent client instance.
   
 
 The input for the program must be taken from a .csv file.   
@@ -214,13 +216,13 @@ Also, the Queues are maintained according to arrival time.
 
 ## Client-side
 The client-code treats each row of the input-csv file independently. It relies on forking child process for each client request, while managing synchronization among the processes using shared-memory IPC, semaphores.
-Client-side Code Explanation
+Client-side Code Explanation:
 
 ### Initializing Shared Memory and Semaphores:
 To facilitate synchronization between child processes, the program creates and initializes shared memory segments and semaphores. Keys for shared memory segments are generated, and semaphores are initialized to manage access to shared resources. The turn variable is also initialized to regulate the order of execution among child processes.
 
 ### Forking Child Processes:
-The program forks child processes to handle individual records from the CSV file concurrently. Each child process calculates the sleep duration based on the difference in arrival times between records. Child processes wait until it's their turn to send data, ensuring orderly execution. Once their turn arrives, child processes acquire a semaphore to send data, update the turn variable for the next process, and receive a response from the server before exiting.
+The program forks child processes to handle individual records from the CSV file concurrently. Each child process calculates the sleep duration based on the difference in arrival times between records. Child processes wait until it's their turn to send data, ensuring orderly execution. Once their turn arrives, child processes acquire a semaphore to send data, update the turn variable for the next process, and receive a response upon completion of the match from the server before exiting.
 
 ### Waiting for Child Processes:
 The parent process waits for all child processes to complete their tasks before proceeding. It does this to ensure that all client requests are processed before terminating the program.
