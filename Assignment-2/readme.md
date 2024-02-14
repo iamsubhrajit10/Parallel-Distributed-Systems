@@ -54,7 +54,7 @@ Player-ID & Arrival-time starts from 1 for valid inputs. Player-ID is unique acr
 | 5         | 2            | M      | S          |
 | 6         | 3            | F      | D          |
 | 7         | 3            | F      | B          |
-| 8         | 4            | M      | b          |
+| 8         | 4            | M      | B          |
 | 9         | 4            | F      | D          |
 | 10        | 5            | M      | D          |
 | 11        | 5            | F      | D          |
@@ -62,32 +62,33 @@ Player-ID & Arrival-time starts from 1 for valid inputs. Player-ID is unique acr
 | 13        | 5            | M      | S          |
 | 14        | 10           | M      | B          |
 | 15        | 10           | F      | D          |
-| 16        | 11           | M      | b          |
+| 16        | 11           | M      | B          |
 | 17        | 12           | M      | S          |
 | 18        | 12           | F      | B          |
-| 19        | 14           | F      | b          |
+| 19        | 14           | F      | B          |
 | 20        | 14           | F      | S          |
-| 41        | 15           | M      | B          |
-| 42        | 15           | F      | S          |
-| 43        | 15           | M      | S          |
-| 44        | 16           | F      | D          |
-| 45        | 16           | M      | D          |
-| 46        | 17           | F      | S          |
-| 47        | 17           | M      | B          |
-| 48        | 18           | F      | D          |
-| 49        | 18           | M      | S          |
-| 50        | 19           | F      | B          |
-| 51        | 19           | F      | S          |
-| 52        | 20           | M      | B          |
-| 53        | 20           | M      | D          |
-| 54        | 21           | F      | D          |
-| 55        | 21           | M      | D          |
-| 56        | 22           | F      | B          |
-| 57        | 22           | F      | S          |
-| 58        | 23           | M      | S          |
-| 59        | 24           | M      | D          |
-| 60        | 24           | F      | S          |
+| 21        | 15           | M      | B          |
+| 22        | 15           | F      | S          |
+| 23        | 15           | M      | S          |
+| 24        | 16           | F      | D          |
+| 25        | 16           | M      | D          |
+| 26        | 17           | F      | S          |
+| 27        | 17           | M      | B          |
+| 28        | 18           | F      | D          |
+| 29        | 18           | M      | S          |
+| 30        | 19           | F      | B          |
+| 31        | 19           | F      | S          |
+| 32        | 20           | M      | B          |
+| 33        | 20           | M      | D          |
+| 34        | 21           | F      | D          |
+| 35        | 21           | M      | D          |
+| 36        | 22           | F      | B          |
+| 37        | 22           | F      | S          |
+| 38        | 23           | M      | S          |
+| 39        | 24           | M      | D          |
+| 40        | 24           | F      | S          |
 | 0         | 69           | X      | X          |
+
 
   **Please Note**: 
    - Please insert a dummy row at the end of all input rows with the following pattern: <Player-ID=0, Arrival-time=Last Request Time+45, Gender=X, Preference=X>
