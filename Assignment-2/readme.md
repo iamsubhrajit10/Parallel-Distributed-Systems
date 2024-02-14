@@ -177,7 +177,7 @@ $ ./client <input csv file name> <output csv file name>
 # Explanation
 ## Server-side
 The server relies on OpenMP threads to manage the clients concurrently; it creates as many threads as the number of clients (no. of rows in the csv file). The server runs continuously until it gets the dummy input row. If you don't provide the dummy row as input, the server will not look into the pending waiting queues that may be processed after the last request arrival-time. 
-More on OpenMP: [OpenMP-org](openmp.org).
+More on OpenMP: [OpenMP-org](https://openmp.org).
 
 It majorly follows FCFS approach, i.e. upon arrival of a request, it instantly checks if any games can be arranged, if not it inserts the request onto the queue(s) based on preference.
 
