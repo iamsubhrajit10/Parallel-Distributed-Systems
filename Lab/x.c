@@ -22,37 +22,49 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
     // Allocate memory for storing all generated strings by this process
     all_strings = (char**)malloc(strings_per_process * sizeof(char*));
     
-    // Loop through each length of the string
-    for (string_length = 1; string_length <= max_length; string_length++) {
-        // Calculate the starting index and ending index for this process
-        int start_index = (process_id * strings_per_process * MAX_CHAR_SET) / total_strings;
-        int end_index = ((process_id + 1) * strings_per_process * MAX_CHAR_SET) / total_strings;
-        printf("Start & End index: %d, %d [proc: %d]\n",start_index, end_index,process_id);
-        // Loop through each character in the character set for this process
-        for (i = start_index; i < end_index; i++) {
-            all_strings[local_count] = (char*)malloc((max_length + 1) * sizeof(char)); // Allocate memory for each string
+    // Calculate the starting and ending indices for this process
+    int start_index = (process_id * total_strings * MAX_CHAR_SET) / num_processes;
+    int end_index = ((process_id + 1) * total_strings * MAX_CHAR_SET) / num_processes;
+
+    // Loop through each character in the character set for this process
+    for (i = start_index; i < end_index; i++) {
+        // Allocate memory for the current string
+        all_strings[local_count] = (char*)malloc((max_length + 1) * sizeof(char));
+
+        // Generate strings of different lengths
+        for (string_length = 1; string_length <= max_length; string_length++) {
+            // Initialize the current string with the first character
             all_strings[local_count][0] = char_set[i % MAX_CHAR_SET];
+
             // Generate strings of the current length recursively
             for (j = 1; j < string_length; j++) {
                 // Calculate the next index for this process
-                idx = (process_id * strings_per_process * MAX_CHAR_SET * (string_length - 1)) / total_strings;
-                all_strings[local_count][j] = char_set[(idx + i + j) % MAX_CHAR_SET];
+                idx = ((i * num_processes) + process_id + j) % total_strings;
+                all_strings[local_count][j] = char_set[idx % MAX_CHAR_SET];
             }
-            all_strings[local_count][string_length] = '\0'; // Null-terminate the string
+
+            // Null-terminate the string
+            all_strings[local_count][string_length] = '\0';
+
+            // Increment the local count
             local_count++;
+
+            // Check if the required number of strings per process has been generated
             if (local_count >= strings_per_process) {
-                printf("local_count for process %d: %d\n",process_id,local_count);
+                printf("Voila! for process %d",process_id);
                 break;
-            } 
+            }
         }
+
+        // Check if the required number of strings per process has been generated
         if (local_count >= strings_per_process) {
-            printf("local_count for process %d: %d\n",process_id,local_count);
-                break;
-        } 
+            printf("Voila! for process %d",process_id);
+            break;
+        }
     }
-    printf("Generated %d strings for process %d",local_count,process_id);
-    printf("\n");
+
     // Print all generated strings
+    printf("\n");
     for (i = 0; i < local_count; i++) {
         printf("%s\n", all_strings[i]);
     }
