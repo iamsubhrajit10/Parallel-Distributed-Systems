@@ -53,25 +53,32 @@ int main(int argc, char *argv[]) {
     int total_strings = X;
 
     // Allocate memory for the buffer to store the generated strings
-    char *buffer = (char *)malloc(total_strings * (N + 1) * sizeof(char));
+    char *send_buffer = (char *)malloc(total_strings * (N + 1) * sizeof(char));
+    char *recv_buffer = NULL;
+
+    // Process 0 allocates memory for receiving buffer
+    if (process_id == 0) {
+        recv_buffer = (char *)malloc(total_strings * num_processes * (N + 1) * sizeof(char));
+    }
 
     // Generate strings
-    generate_strings(process_id, num_processes, N, total_strings, buffer);
+    generate_strings(process_id, num_processes, N, total_strings, send_buffer);
 
     // Gather all the generated strings to process 0
-    MPI_Gather(buffer, total_strings * (N + 1), MPI_CHAR, buffer, total_strings * (N + 1), MPI_CHAR, 0, MPI_COMM_WORLD);
+    MPI_Gather(send_buffer, total_strings * (N + 1), MPI_CHAR, recv_buffer, total_strings * (N + 1), MPI_CHAR, 0, MPI_COMM_WORLD);
 
-    // Process 0 can now access all the generated strings in the buffer
-
-    // Output the generated strings from process 0
+    // Process 0 outputs the generated strings
     if (process_id == 0) {
-        for (int i = 0; i < total_strings; i++) {
-            printf("%s\n", &buffer[i * (N + 1)]);
+        for (int i = 0; i < total_strings * num_processes; i++) {
+            printf("%s\n", &recv_buffer[i * (N + 1)]);
         }
     }
 
     // Free allocated memory
-    free(buffer);
+    free(send_buffer);
+    if (process_id == 0) {
+        free(recv_buffer);
+    }
 
     MPI_Finalize();
     return 0;
