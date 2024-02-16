@@ -16,6 +16,7 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
     if (process_id < total_strings % num_processes) {
         strings_per_process++;
     }
+    printf("Strings for process %d: %d\n",process_id,strings_per_process);
 
     // Allocate memory for storing all generated strings by this process
     all_strings = (char**)malloc(strings_per_process * sizeof(char*));
