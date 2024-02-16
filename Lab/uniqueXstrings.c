@@ -52,8 +52,12 @@ int main(int argc, char *argv[]) {
     // Calculate the total number of strings
     int total_strings = X;
 
-    // Allocate memory for the buffer to store the generated strings
-    char *buffer = (char *)malloc(total_strings * (N + 1) * sizeof(char));
+    // Calculate the maximum possible length of the generated strings
+int max_possible_length = N + 1; // N characters plus '\0' terminator
+
+// Allocate memory for the buffer to store the generated strings
+char *buffer = (char *)malloc(total_strings * max_possible_length * sizeof(char));
+
 
     // Generate strings
     generate_strings(process_id, num_processes, N, total_strings, buffer);
