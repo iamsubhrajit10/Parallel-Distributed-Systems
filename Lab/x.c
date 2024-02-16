@@ -101,7 +101,7 @@ void receive_permutations(int process_id, int num_processes, int max_length, int
   }
  // Allocate memory for receiving permutations from all processes
 for (int i = 0; i < num_processes; i++) {
-    all_permutations[i * strings_per_process] = (char *)malloc((N + 1) * (strings_per_process + 1) * sizeof(char));
+    all_permutations[i * strings_per_process] = (char *)malloc((max_length + 1) * (strings_per_process + 1) * sizeof(char));
 }
 
   // Receive permutations from all processes except itself
