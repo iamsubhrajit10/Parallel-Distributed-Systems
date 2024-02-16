@@ -91,6 +91,8 @@ void receive_permutations(int process_id, int num_processes, int max_length, int
     // int size =  * ;
     int size = (strings_per_process + 1) * (max_length + 1) + (strings_per_process + 1) + 1; 
     // Receive from each sender process
+    all_permutations = (char **)malloc((num_processes)*sizeof(char *));
+    
     for (int src = 0; src < num_processes ; src++) { 
         char *received_data = (char *)malloc(size * sizeof(char));
         if (received_data == NULL) {
@@ -106,7 +108,7 @@ void receive_permutations(int process_id, int num_processes, int max_length, int
 
         // Free the temporary buffer
         free(received_data); 
-         printf("%s\n",all_permutations[src]);
+        printf("%s\n",all_permutations[src]);
     }
     
    
