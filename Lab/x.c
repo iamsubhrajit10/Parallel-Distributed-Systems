@@ -44,7 +44,7 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
     }
 
     // Allocate memory for storing all generated strings by this process
-    all_strings = (char**)malloc(strings_per_process * sizeof(char*));
+    //char **all_strings = (char**)malloc(strings_per_process * sizeof(char*));
 
     // Calculate the starting and ending indices for this process
     int start_index = (process_id * total_strings * MAX_CHAR_SET) / num_processes;
