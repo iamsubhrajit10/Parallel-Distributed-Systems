@@ -106,7 +106,10 @@ void receive_permutations(int process_id, int num_processes, int max_length, int
 
         // Free the temporary buffer
         free(received_data); 
+         printf("%s\n",all_permutations[src]);
     }
+    
+   
 }
 
 
