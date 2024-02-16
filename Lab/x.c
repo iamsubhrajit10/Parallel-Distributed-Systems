@@ -129,13 +129,9 @@ int main(int argc, char *argv[]) {
         receive_permutations(process_id, num_processes - 1, N, X, &all_permutations); 
         for (int i = 0; i < num_processes-1; i++) {
           printf("%s\n", all_permutations[i]);
+          free(all_permutations[i]);
         }
-    
-        // Free memory of the new 2D array
-        for (int i = 0; i < X; i++) {
-          free(new_array[i]);
-        }
-        free(new_array); 
+        free(all_permutations); 
     } else {
         generate_strings(process_id, num_processes - 1, N, X);
     }
