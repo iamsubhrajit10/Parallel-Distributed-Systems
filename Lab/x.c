@@ -43,13 +43,14 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
             if (local_count >= strings_per_process) {
                 printf("local_count for process %d: %d\n",process_id,local_count);
                 break;
-            }
+            } 
         }
         if (local_count >= strings_per_process) {
             printf("local_count for process %d: %d\n",process_id,local_count);
                 break;
-        }
+        } 
     }
+    printf("Generated %d strings for process %d",process_id);
     printf("\n");
     // Print all generated strings
     for (i = 0; i < local_count; i++) {
