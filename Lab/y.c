@@ -57,11 +57,12 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
         // x_permutations[i-1]=permutations[i];
         printf("%s\n", permutations[i]);
     }
+    printf("No of strings printed: %d, by process %d\n",strings_per_process,process_id);
 }
 
 int main(int argc, char *argv[]) {
     int process_id, num_processes;
-    int X = 10000; // Number of strings to generate
+    int X = 1000; // Number of strings to generate
     int N = 4;  // Maximum length of strings
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &process_id);
