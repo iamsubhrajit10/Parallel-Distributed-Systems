@@ -55,7 +55,7 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
 
     // Generate permutations and store them in the 2D array
     generate_permutations(char_set, start_index, end_index , max_length, "", 0, permutations, &counter, strings_per_process+1);
-
+    printf("\n");
     for (int i = 0; i < strings_per_process; i++) {
         // x_permutations[i-1]=permutations[i];
         printf("%s\n", permutations[i]);
