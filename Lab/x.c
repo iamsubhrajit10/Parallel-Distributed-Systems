@@ -127,14 +127,46 @@ int main(int argc, char *argv[]) {
     
     if (process_id == num_processes - 1) {
         receive_permutations(process_id, num_processes - 1, N, X, &all_permutations);
-        for (int i = 0; i < num_processes - 1; i++) {
-            printf("%s\n", all_permutations[i]); 
+        char **new_array = (char **)malloc(X * sizeof(char *));  
+        for (int i = 0; i < X; i++) {
+          new_array[i] = (char *)malloc((N + 1) * sizeof(char)); // +1 for null terminator
         }
-        // Free memory allocated for received permutations
+    
+        // Process all_permutations and distribute strings into new_array
+        int current_row = 0;
+        int string_index = 0;
         for (int i = 0; i < num_processes - 1; i++) {
-            free(all_permutations[i]);
+          char *current_string = all_permutations[i];
+    
+          while (*current_string != '\0') {
+            if (current_row >= X) {
+              fprintf(stderr, "Error: More strings generated than expected.\n");
+              exit(1);
+            }
+            strncpy(new_array[current_row], current_string, N);
+            new_array[current_row][N] = '\0'; // Ensure null-termination
+            current_row++;
+    
+            // Find the start of the next string (skip space delimiter)
+            while (*current_string != '\0' && *current_string == ' ') {
+              current_string++; 
+            }
+          }
+    
+          free(all_permutations[i]);  
         }
-        free(all_permutations);
+        free(all_permutations); 
+    
+        // Now you have your strings in 'new_array' 
+        for (int i = 0; i < X; i++) {
+          printf("%s\n", new_array[i]);
+        }
+    
+        // Free memory of the new 2D array
+        for (int i = 0; i < X; i++) {
+          free(new_array[i]);
+        }
+        free(new_array); 
     } else {
         generate_strings(process_id, num_processes - 1, N, X);
     }
