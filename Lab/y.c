@@ -70,7 +70,7 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
 
 int main(int argc, char *argv[]) {
     int process_id, num_processes;
-    int X = 10; // Number of strings to generate
+    int X = 100; // Number of strings to generate
     int N = 3;  // Maximum length of strings
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &process_id);
