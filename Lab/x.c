@@ -27,7 +27,7 @@ void generate_unique_strings(int process_id, int num_processes, int max_length, 
                 str[j] = char_set[j % MAX_CHAR_SET];
             }
             str[string_length + id_length] = '\0';
-
+            printf("%s\n",str);
             // Copy the generated string to the local buffer
             strcpy(&local_buffer[local_count * (max_length + 1)], str);
             local_count++;
