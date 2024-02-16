@@ -6,6 +6,30 @@
 #define MAX_CHAR_SET 62 // Total number of alphanumeric characters
 
 // Function to generate alphanumeric strings
+void swap(char *x, char *y) {
+    char temp = *x;
+    *x = *y;
+    *y = temp;
+}
+
+void generate_permutations(char *char_set, int s, int e, int n, char *prefix, int prefix_length, char **permutations, int *counter, int x) {
+    if (*counter >= x || prefix_length > n) {
+        return;
+    }
+
+    strcpy(permutations[*counter], prefix);
+    (*counter)++;
+
+    for (int i = s; i <= e; i++) {
+        char new_prefix[prefix_length + 2]; // +2 for the null terminator and the character to be appended
+        strcpy(new_prefix, prefix);
+        new_prefix[prefix_length] = char_set[i];
+        new_prefix[prefix_length + 1] = '\0';
+
+        generate_permutations(char_set, s, e, n, new_prefix, prefix_length + 1, permutations, counter, x);
+    }
+}
+
 void generate_strings(int process_id, int num_processes, int max_length, int total_strings) {
     char char_set[MAX_CHAR_SET + 1] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     int string_length;
@@ -28,52 +52,28 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
     int start_index = (process_id * total_strings * MAX_CHAR_SET) / num_processes;
     int end_index = ((process_id + 1) * total_strings * MAX_CHAR_SET) / num_processes;
 
-    // Loop through each character in the character set for this process
-    for (i = start_index; i < end_index; i++) {
-        // Allocate memory for the current string
-        all_strings[local_count] = (char*)malloc((max_length + 1) * sizeof(char));
-
-        // Generate strings of different lengths
-        for (string_length = 1; string_length <= max_length; string_length++) {
-            // Initialize the current string with the first character
-            all_strings[local_count][0] = char_set[i % MAX_CHAR_SET];
-
-            // Generate strings of the current length recursively
-            for (j = 1; j < string_length; j++) {
-                // Calculate the next index for this process
-                idx = ((i * num_processes) + process_id + j) % total_strings;
-                all_strings[local_count][j] = char_set[idx % MAX_CHAR_SET];
-            }
-
-            // Null-terminate the string
-            all_strings[local_count][string_length] = '\0';
-
-            // Increment the local count
-            local_count++;
-
-            // Check if the required number of strings per process has been generated
-            if (local_count >= strings_per_process) {
-                break;
-            }
-        }
-
-        // Check if the required number of strings per process has been generated
-        if (local_count >= strings_per_process) {
-            break;
-        }
+    char **permutations = (char **)malloc(x * sizeof(char *));
+    for (int i = 0; i < x; i++) {
+        permutations[i] = (char *)malloc((n + 1) * sizeof(char)); // +1 for null terminator
     }
+    int counter = 0; // Counter to track the number of permutations generated
+
+    // Generate permutations and store them in the 2D array
+    generate_permutations(char_set, start_index, end_index , strings_per_process, "", 0, permutations, &counter, x);
+    
 
     // Print all generated strings
-    printf("\n");
-    for (i = 0; i < local_count; i++) {
-        printf("%s\n", all_strings[i]);
+    // Print the generated permutations
+    printf("Generated Permutations for process %d:\n",process_id);
+    for (int i = 0; i < counter; i++) {
+        printf("%s\n", permutations[i]);
     }
 
-    // Free the memory allocated for all_strings
-    for (i = 0; i < local_count; i++) {
-        free(all_strings[i]);
+    // Free memory allocated for permutations
+    for (int i = 0; i < x; i++) {
+        free(permutations[i]);
     }
-    free(all_strings);
+    free(permutations);
 }
 
 
