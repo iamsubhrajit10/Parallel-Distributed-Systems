@@ -84,7 +84,7 @@ void receive_permutations(int process_id, int num_processes, int max_length, int
         strings_per_process++;
     }
 
-    for (int src = 0; src < num_processes - 1; src++) { // Loop only to receive data
+    for (int src = 0; src < num_processes; src++) { // Loop only to receive data
         int size = (strings_per_process + 1) *( max_length+1);
         char *received_data = (char *)malloc(size * sizeof(char));
         if (received_data == NULL) {
