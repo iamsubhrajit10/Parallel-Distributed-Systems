@@ -172,7 +172,7 @@ int main(int argc, char *argv[]) {
         char **formatted_strings = format_strings(all_permutations, num_processes-1);
     
         // (Optional) Print the formatted array
-        for (int i = 0; i < total_strings; i++) {
+        for (int i = 0; i < X; i++) {
             printf("%s\n", formatted_strings[i]);
         }
     
