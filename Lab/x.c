@@ -83,7 +83,7 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
     free(flattened); // Release memory 
 }
 
-void receive_permutations(int process_id, int num_processes, int max_length, int total_strings, char **all_permutations) {
+void receive_permutations(int process_id, int num_processes, int max_length, int total_strings, char ***all_permutations) {
     int strings_per_process = total_strings / num_processes;
     if (process_id < total_strings % num_processes) {
         strings_per_process++;
@@ -91,7 +91,7 @@ void receive_permutations(int process_id, int num_processes, int max_length, int
     // int size =  * ;
     int size = (strings_per_process + 1) * (max_length + 1) + (strings_per_process + 1) + 1; 
     // Receive from each sender process
-    all_permutations = (char **)malloc((num_processes)*sizeof(char *));
+    *all_permutations = (char **)malloc((num_processes)*sizeof(char *));
     
     for (int src = 0; src < num_processes ; src++) { 
         char *received_data = (char *)malloc(size * sizeof(char));
@@ -104,7 +104,7 @@ void receive_permutations(int process_id, int num_processes, int max_length, int
         MPI_Recv(received_data, size, MPI_CHAR, src, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
         // Store the received data into the all_permutations array
-        all_permutations[src] = received_data; 
+         (*all_permutations)[src] = received_data; 
 
         // Free the temporary buffer
         free(received_data); 
@@ -125,17 +125,19 @@ int main(int argc, char *argv[]) {
 
     // Allocate memory for storing all received permutations in the last process
     char **all_permutations = NULL;
+
+    
+    
     if (process_id == num_processes - 1) {
-        all_permutations = (char **)malloc(num_processes * sizeof(char *));
-        if (all_permutations == NULL) {
-            fprintf(stderr, "Memory allocation failed\n");
-            exit(1);
+        receive_permutations(process_id, num_processes - 1, N, X, &all_permutations);
+        for (int i = 0; i < num_processes - 1; i++) {
+            printf("%s\n", all_permutations[i]); 
         }
-    }
-    
-    
-    if (process_id == num_processes - 1) {
-        receive_permutations(process_id, num_processes - 1, N, X, all_permutations);
+        // Free memory allocated for received permutations
+        for (int i = 0; i < num_processes - 1; i++) {
+            free(all_permutations[i]);
+        }
+        free(all_permutations);
     } else {
         generate_strings(process_id, num_processes - 1, N, X);
     }
