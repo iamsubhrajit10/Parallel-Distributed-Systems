@@ -48,6 +48,9 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
 
     // Now, all_strings is filled with generated strings for this process.
     // You can use all_strings as needed.
+     for (i = 0; i < local_count; i++) {
+        printf("%s\n", all_strings[i]);
+    }
 
     // Don't forget to free the memory allocated for all_strings before returning.
     for (i = 0; i < local_count; i++) {
