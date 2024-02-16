@@ -93,11 +93,12 @@ void receive_permutations(int process_id, int num_processes, int max_length, int
     }
 
     // Free memory allocated for received_permutations
-    // for (int i = 0; i <= strings_per_process; i++) {
-    //     free(received_permutations[i]);
-    // }
-    // free(received_permutations);
+    for (int i = 0; i <= strings_per_process; i++) {
+        free(received_permutations[i]);
+    }
+    free(received_permutations);
 }
+
 
 int main(int argc, char *argv[]) {
     int process_id, num_processes;
