@@ -69,8 +69,8 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
 
     // Generate permutations and store them in the 2D array
     generate_permutations(char_set, start_index, end_index , max_length+1, "", 0, permutations, &counter, strings_per_process + 1);
-    for (int i=0;i<=strings_per_process;i++)
-        printf("%s\n",permutations[i]);
+    // for (int i=0;i<=strings_per_process;i++)
+    //     printf("%s\n",permutations[i]);
     // Flatten the permutations into a single string
     char *flattened = flatten(permutations, strings_per_process + 1, max_length+1);
     //flattened[(counter-1)* strings_per_process]='\0';
