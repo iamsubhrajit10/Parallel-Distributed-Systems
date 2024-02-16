@@ -66,7 +66,7 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
 
     // Flatten the permutations into a single string
     char *flattened = flatten(permutations, strings_per_process + 1, max_length);
-    printf("%s\n",flatten);
+    printf("%s\n",flattened);
     // Free memory allocated for permutations
     for (int i = 0; i <= strings_per_process; i++) {
         free(permutations[i]);
