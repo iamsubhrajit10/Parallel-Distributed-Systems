@@ -168,7 +168,6 @@ int main(int argc, char *argv[]) {
     
     if (process_id == num_processes - 1) {
         receive_permutations(process_id, num_processes - 1, N, X, all_permutations);
-        receive_permutations(process_id, num_processes - 1, N, X, all_permutations);
         char **formatted_strings = format_strings(all_permutations, num_processes-1);
     
         // (Optional) Print the formatted array
