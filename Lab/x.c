@@ -70,7 +70,7 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
     }
 
     // Free memory allocated for permutations
-    for (int i = 0; i < x; i++) {
+    for (int i = 0; i < strings_per_process; i++) {
         free(permutations[i]);
     }
     free(permutations);
