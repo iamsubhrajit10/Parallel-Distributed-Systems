@@ -110,17 +110,21 @@ void receive_permutations(int process_id, int num_processes, int max_length, int
 }
 char** format_strings(char **all_permutations, int num_processes) {
     // 1. Calculate Output Array Size
-    int total_strings = 0;
+    int total_rows, total_columns = 0;
     for (int i = 0; i < num_processes; i++) {
         char *curr_string = all_permutations[i];
         for (int j = 0; curr_string[j] != '\0'; j++) {
             if (curr_string[j] == '\n') {
-                total_strings++;
+                total_rows++;
+            }
+            if (curr_string[j] == " "){
+                total_columns++;
             }
         }
-        total_strings++;  // Count the last string in each batch
+        total_rows++;  // Count the last string in each batch
     }
-    printf("%d Strings.\n",total_strings);
+    printf("%d, %d.\n",total_rows,total_columns);
+    
     // 2. Allocate the Output Array
     char **formatted_strings = (char **)malloc(total_strings * sizeof(char *));
     if (formatted_strings == NULL) {
