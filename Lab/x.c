@@ -130,12 +130,12 @@ int main(int argc, char *argv[]) {
     }
 
     // Free memory
-    if (process_id == num_processes - 1) {
-        for (int i = 0; i < X; i++) {
-            free(all_permutations[i]);
-        }
-        free(all_permutations);
-    }
+    // if (process_id == num_processes - 1) {
+    //     for (int i = 0; i < X; i++) {
+    //         free(all_permutations[i]);
+    //     }
+    //     free(all_permutations);
+    // }
 
     MPI_Finalize();
     return 0;
