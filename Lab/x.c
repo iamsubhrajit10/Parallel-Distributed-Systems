@@ -83,18 +83,21 @@ void receive_permutations(int process_id, int num_processes, int max_length, int
   if (total_strings % num_processes != 0) {
     strings_per_process++;
   }
+for (int src = 0; src < num_processes; src++) { 
+    size = (strings_per_process+1)*max_length;
   char *received_data = (char *)malloc(size * sizeof(char));
         if (received_data == NULL) {
             fprintf(stderr, "Memory allocation failed\n");
             exit(1);
         }
-    size = (strings_per_process+1)*max_length;
+    
         // Receive data
         MPI_Recv(received_data, size, MPI_CHAR, src, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         // Store received data in the array
         printf("for proc:%d\n",src);
         printf("%s\n",received_data);
         all_permutations[src] = received_data;
+}
 }
 int main(int argc, char *argv[]) {
     int process_id, num_processes;
