@@ -127,7 +127,7 @@ int main(int argc, char *argv[]) {
     
     if (process_id == num_processes - 1) {
         receive_permutations(process_id, num_processes - 1, N, X, &all_permutations);
-        char **new_array = (char **)malloc(X * sizeof(char *));  
+        char **new_array = (char **)malloc((X+1) * sizeof(char *));  
         for (int i = 0; i < X; i++) {
           new_array[i] = (char *)malloc((N + 1) * sizeof(char)); // +1 for null terminator
         }
@@ -139,7 +139,7 @@ int main(int argc, char *argv[]) {
           char *current_string = all_permutations[i];
     
           while (*current_string != '\0') {
-            if (current_row >= X) {
+            if (current_row > X) {
               fprintf(stderr, "Error: More strings generated than expected.\n");
               exit(1);
             }
