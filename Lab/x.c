@@ -128,6 +128,7 @@ int main(int argc, char *argv[]) {
     if (num_processes == 1) {
         // If there's only one process, generate strings directly in the main process
         char **permutations = (char **)malloc((X + 1) * sizeof(char *));
+         char char_set[MAX_CHAR_SET + 1] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
         int counter=0;
         for (int i = 0; i <= X; i++) {
             permutations[i] = (char *)malloc((N + 1) * sizeof(char)); // +1 for null terminator
