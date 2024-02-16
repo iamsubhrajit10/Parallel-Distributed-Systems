@@ -106,7 +106,6 @@ void receive_permutations(int process_id, int num_processes, int max_length, int
 
         // Store the received data into the all_permutations array
         all_permutations[src] = received_data; 
-        printf("%s\n", received_data);
 
         // Free the temporary buffer
         free(received_data); 
@@ -133,11 +132,6 @@ int main(int argc, char *argv[]) {
     
     if (process_id == num_processes - 1) {
         receive_permutations(process_id, num_processes - 1, N, X, all_permutations);
-
-        // Print received strings if desired
-        // for (int i = 0; i < num_processes - 1; i++) {
-        //     printf("%s\n", all_permutations[i]); 
-        // }
     } else {
         generate_strings(process_id, num_processes - 1, N, X);
     }
