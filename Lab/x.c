@@ -88,13 +88,13 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
 
 void receive_permutations(int process_id, int num_processes, int max_length, int total_strings, char **all_permutations) {
     int strings_per_process = total_strings / num_processes;
-    if (total_strings % num_processes != 0) {
+    if (process_id < total_strings % num_processes) {
         strings_per_process++;
     }
-
+    // int size =  * ;
+    int size = (strings_per_process + 1) * (max_length + 1) + (strings_per_process + 1) + 1; 
     // Receive from each sender process
     for (int src = 0; src < num_processes - 1; src++) { 
-        int size = (strings_per_process + 1) * (max_length + 1);
         char *received_data = (char *)malloc(size * sizeof(char));
         if (received_data == NULL) {
             fprintf(stderr, "Process %d: Memory allocation failed\n", process_id);
