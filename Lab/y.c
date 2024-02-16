@@ -42,7 +42,8 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
     if (process_id < total_strings % num_processes) {
         strings_per_process++;
     }
-
+    int start_index = (process_id * strings_per_process * MAX_CHAR_SET) / total_strings;
+    int end_index = ((process_id + 1) * strings_per_process * MAX_CHAR_SET) / total_strings;
    char **permutations = (char **)malloc(strings_per_process * sizeof(char *));
     for (int i = 0; i < strings_per_process; i++) {
         permutations[i] = (char *)malloc((max_length + 1) * sizeof(char)); // +1 for null terminator
