@@ -6,7 +6,7 @@
 #define MAX_CHAR_SET 62 // Total number of alphanumeric characters
 
 // Function to generate alphanumeric strings
-void generate_strings(int process_id, int num_processes, int max_length, int total_strings) {
+void generate_strings(int process_id, int num_processes, int max_length, int total_strings, char* printing_buffer) {
     char char_set[MAX_CHAR_SET + 1] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     int string_length;
     int i, j, idx;
@@ -34,9 +34,14 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
                 idx = (process_id * strings_per_process * MAX_CHAR_SET * (string_length - 1)) / total_strings;
                 str[j] = char_set[(idx + i) % MAX_CHAR_SET];
             }
-            // Print the generated string
-            printf("%s\n", str);
-            local_count++;
+            // Send the generated string to process 0
+            if (process_id != 0) {
+                MPI_Send(str, max_length + 1, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
+            } else {
+                // If process 0, copy the string to the printing buffer
+                strcpy(printing_buffer + local_count * (max_length + 1), str);
+                local_count++;
+            }
             if (local_count >= strings_per_process) {
                 break;
             }
@@ -50,13 +55,29 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
 int main(int argc, char *argv[]) {
     int process_id, num_processes;
     int X = 100; // Number of strings to generate
-    int N = 2;  // Maximum length of strings
+    int N = 2;   // Maximum length of strings
+    char *printing_buffer;
+
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &process_id);
     MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
 
+    if (process_id == 0) {
+        // Allocate memory for the printing buffer only in process 0
+        printing_buffer = (char *)malloc(X * (N + 1) * sizeof(char));
+    }
+
     // Generate strings
-    generate_strings(process_id, num_processes, N, X);
+    generate_strings(process_id, num_processes, N, X, printing_buffer);
+
+    if (process_id == 0) {
+        // Print the strings received by process 0
+        for (int i = 0; i < X; i++) {
+            printf("%s\n", printing_buffer + i * (N + 1));
+        }
+        // Free the printing buffer memory allocated in process 0
+        free(printing_buffer);
+    }
 
     MPI_Finalize();
     return 0;
