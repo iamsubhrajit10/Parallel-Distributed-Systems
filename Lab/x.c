@@ -21,13 +21,13 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
 
     // Allocate memory for storing all generated strings by this process
     all_strings = (char**)malloc(strings_per_process * sizeof(char*));
-
+    
     // Loop through each length of the string
     for (string_length = 1; string_length <= max_length; string_length++) {
         // Calculate the starting index and ending index for this process
         int start_index = (process_id * strings_per_process * MAX_CHAR_SET) / total_strings;
         int end_index = ((process_id + 1) * strings_per_process * MAX_CHAR_SET) / total_strings;
-
+        printf("Start & End index: %d, %d [proc: %d]\n",start_index, end_index,process_id);
         // Loop through each character in the character set for this process
         for (i = start_index; i < end_index; i++) {
             all_strings[local_count] = (char*)malloc((max_length + 1) * sizeof(char)); // Allocate memory for each string
