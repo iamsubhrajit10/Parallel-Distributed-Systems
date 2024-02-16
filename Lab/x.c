@@ -99,8 +99,8 @@ void receive_permutations(int process_id, int num_processes, char **all_permutat
 
         // Receive data
         MPI_Recv(received_data, size, MPI_CHAR, src, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-
         // Store received data in the array
+        printf("%s\n",received_data);
         all_permutations[src] = received_data;
     }
 }
@@ -127,9 +127,9 @@ int main(int argc, char *argv[]) {
         receive_permutations(process_id, num_processes - 1, all_permutations);
 
         // Print received strings if desired
-        for (int i = 0; i < num_processes - 1; i++) {
-            printf("%s\n", all_permutations[i]); 
-        }
+        // for (int i = 0; i < num_processes - 1; i++) {
+        //     printf("%s\n", all_permutations[i]); 
+        // }
 
         // Free memory allocated for received permutations
         for (int i = 0; i < num_processes - 1; i++) {
