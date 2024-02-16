@@ -131,10 +131,10 @@ int main(int argc, char *argv[]) {
             printf("%s\n", all_permutations[i]); 
         }
         // Free memory allocated for received permutations
-        // for (int i = 0; i < num_processes - 1; i++) {
-        //     free(all_permutations[i]);
-        // }
-        // free(all_permutations);
+        for (int i = 0; i < num_processes - 1; i++) {
+            free(all_permutations[i]);
+        }
+        free(all_permutations);
     } else {
         generate_strings(process_id, num_processes - 1, N, X);
     }
