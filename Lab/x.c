@@ -94,7 +94,7 @@ void receive_permutations(int process_id, int num_processes, int max_length, int
     // int size =  * ;
     int size = (strings_per_process + 1) * (max_length + 1) + (strings_per_process + 1) + 1; 
     // Receive from each sender process
-    for (int src = 0; src < num_processes - 1; src++) { 
+    for (int src = 0; src < num_processes ; src++) { 
         char *received_data = (char *)malloc(size * sizeof(char));
         if (received_data == NULL) {
             fprintf(stderr, "Process %d: Memory allocation failed\n", process_id);
