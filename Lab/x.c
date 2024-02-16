@@ -108,45 +108,7 @@ void receive_permutations(int process_id, int num_processes, int max_length, int
         free(received_data); 
     }
 }
-char** format_strings(char **all_permutations, int num_processes) {
-    // 1. Calculate Output Array Size
-    int total_rows, total_columns = 0;
-    for (int i = 0; i < num_processes; i++) {
-        char *curr_string = all_permutations[i];
-        for (int j = 0; curr_string[j] != '\0'; j++) {
-            if (curr_string[j] == '\n') {
-                total_rows++;
-            }
-            if (curr_string[j] == ' '){
-                total_columns++;
-            }
-        }
-        total_rows++;  // Count the last string in each batch
-    }
-    printf("%d, %d.\n",total_rows,total_columns);
-    
-    // 2. Allocate the Output Array
-    char **formatted_strings = (char **)malloc(total_columns * sizeof(char *));
-    if (formatted_strings == NULL) {
-        fprintf(stderr, "Memory allocation failed\n");
-        exit(1);
-    }
 
-    // 3. Split and Copy into Formatted Array
-    int index = 0;
-    for (int i = 0; i < num_processes; i++) {
-        char *curr_string = all_permutations[i];
-        char *token = strtok(curr_string, " ");
-        while (token != NULL) {
-            formatted_strings[index] = (char *)malloc((strlen(token) + 1) * sizeof(char));
-            strcpy(formatted_strings[index], token);
-            index++;
-            token = strtok(NULL, " ");
-        }
-    }
-
-    return formatted_strings;
-}
 
 int main(int argc, char *argv[]) {
     int process_id, num_processes;
@@ -169,15 +131,6 @@ int main(int argc, char *argv[]) {
     
     if (process_id == num_processes - 1) {
         receive_permutations(process_id, num_processes - 1, N, X, all_permutations);
-        char **formatted_strings = format_strings(all_permutations, num_processes-1);
-    
-        // (Optional) Print the formatted array
-        for (int i = 0; i < X; i++) {
-            printf("%s\n", formatted_strings[i]);
-        }
-    
-        // Free memory from both 'all_permutations' and 'formatted_strings'
-        // ...
     } else {
         generate_strings(process_id, num_processes - 1, N, X);
     }
