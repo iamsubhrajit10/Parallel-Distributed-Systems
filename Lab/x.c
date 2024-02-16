@@ -93,10 +93,10 @@ void receive_permutations(int process_id, int num_processes, int max_length, int
     }
 
     // Free memory allocated for received_permutations
-    for (int i = 0; i <= strings_per_process; i++) {
-        free(received_permutations[i]);
-    }
-    free(received_permutations);
+    // for (int i = 0; i <= strings_per_process; i++) {
+    //     free(received_permutations[i]);
+    // }
+    // free(received_permutations);
 }
 
 
@@ -122,7 +122,7 @@ int main(int argc, char *argv[]) {
 
     // Last process receives strings from all other processes
     if (process_id == num_processes - 1) {
-        receive_permutations(process_id, num_processes, N, X, all_permutations);
+        receive_permutations(process_id, num_processes-1, N, X, all_permutations);
 
         // Print received strings
         for (int i = 0; i < X; i++) {
