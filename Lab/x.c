@@ -100,6 +100,7 @@ void receive_permutations(int process_id, int num_processes, char **all_permutat
         // Receive data
         MPI_Recv(received_data, size, MPI_CHAR, src, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         // Store received data in the array
+        printf("for proc:%d\n",src);
         printf("%s\n",received_data);
         all_permutations[src] = received_data;
     }
