@@ -114,8 +114,8 @@ void receive_permutations(int process_id, int num_processes, int max_length, int
 
 int main(int argc, char *argv[]) {
     int process_id, num_processes;
-    int X = 10; // Number of strings to generate
-    int N = 10;    // Maximum length of strings
+    int X = 1000; // Number of strings to generate
+    int N = 7;    // Maximum length of strings
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &process_id);
     MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
