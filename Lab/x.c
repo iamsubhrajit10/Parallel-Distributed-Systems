@@ -79,11 +79,11 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
     // }
     // Send the whole permutations array to the last process
     char *flattened = flatten(permutations, strings_per_process+1, max_length+1);
-     for (int i = 0; flattened[i] != '\0'; i++) {
-        if(flattened[i]==',')
-            continue;
-        printf("%c", flattened[i]);
-    }
+    //  for (int i = 0; flattened[i] != '\0'; i++) {
+    //     if(flattened[i]==',')
+    //         continue;
+    //     printf("%c", flattened[i]);
+    // }
     printf("\n");
     MPI_Send(&flattened, (max_length + 1) * (strings_per_process + 1), MPI_CHAR, num_processes - 1, 0, MPI_COMM_WORLD);
     
@@ -101,7 +101,7 @@ void receive_permutations(int process_id, int num_processes, int max_length, int
   }
 
   // Receive permutations from all processes except itself
-  for (int src = 0; src < num_processes - 1; src++) { 
+  for (int src = 0; src < num_processes; src++) { 
     MPI_Recv(all_permutations[src * strings_per_process], // Store directly in all_permutations
              (max_length + 1) * (strings_per_process + 1), 
              MPI_CHAR, src, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
