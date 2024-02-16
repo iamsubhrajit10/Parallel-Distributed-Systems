@@ -74,8 +74,8 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
     free(permutations);
     //free(flattened); // Free the flattened array
 
-    // Send the flattened permutations array to the last process
-    MPI_Send(flattened, strlen(flattened) + 1, MPI_CHAR, num_processes - 1, 0, MPI_COMM_WORLD);
+    MPI_Send(flattened, strlen(flattened) + 1, MPI_CHAR, num_processes, 0, MPI_COMM_WORLD);
+    free(flattened); // Release memory 
 }
 
 void receive_permutations(int process_id, int num_processes, int max_length, int total_strings, char **all_permutations) {
@@ -83,20 +83,17 @@ void receive_permutations(int process_id, int num_processes, int max_length, int
     if (total_strings % num_processes != 0) {
         strings_per_process++;
     }
-    size_t size = (strings_per_process + 1) * max_length; // Declaration of size variable
-    for (int src = 0; src < num_processes; src++) { 
+
+    for (int src = 0; src < num_processes - 1; src++) { // Loop only to receive data
+        int size = (strings_per_process + 1) * max_length;
         char *received_data = (char *)malloc(size * sizeof(char));
         if (received_data == NULL) {
-            fprintf(stderr, "Memory allocation failed\n");
-            exit(1);
+            fprintf(stderr, "Process %d: Memory allocation failed\n", process_id);
+            MPI_Abort(MPI_COMM_WORLD, 1);
         }
-    
-        // Receive data
+
         MPI_Recv(received_data, size, MPI_CHAR, src, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        // Store received data in the array
-        printf("for proc:%d\n",src);
-        printf("%s\n",received_data);
-        all_permutations[src] = received_data;
+        all_permutations[src] = received_data; // Store received data
     }
 }
 
@@ -118,8 +115,9 @@ int main(int argc, char *argv[]) {
         }
     }
     
+    
     if (process_id == num_processes - 1) {
-        receive_permutations(process_id, num_processes - 1, N, X, all_permutations); // Added a comma before all_permutations
+        receive_permutations(process_id, num_processes - 1, N, X, all_permutations);
 
         // Print received strings if desired
         // for (int i = 0; i < num_processes - 1; i++) {
@@ -132,7 +130,7 @@ int main(int argc, char *argv[]) {
         }
         free(all_permutations);
     } else {
-        generate_strings(process_id, num_processes-1, N, X);
+        generate_strings(process_id, num_processes - 1, N, X);
     }
 
     MPI_Finalize();
