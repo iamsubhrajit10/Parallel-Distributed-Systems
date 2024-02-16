@@ -26,7 +26,7 @@ char* flatten(char **strings, int num_strings, int max_length) {
         }
         // Add delimiter (unless it's the last string)
         if (i < num_strings - 1) {
-            flattened_array[index++] = ','; 
+            flattened_array[index++] = ' '; 
        }
     }
 
