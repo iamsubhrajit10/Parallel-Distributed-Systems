@@ -80,16 +80,16 @@ void receive_permutations(int process_id, int num_processes, int max_length, int
 
     // Receive permutations from all processes except the last one
     for (int src = 0; src < num_processes; src++) {
-        MPI_Recv(received_permutations[i], (max_length + 1) * (strings_per_process + 1), MPI_CHAR, src, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        printf("%s\n",received_permutations[i]);
+        MPI_Recv(received_permutations[src], (max_length + 1) * (strings_per_process + 1), MPI_CHAR, src, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        printf("%s\n",received_permutations[src]);
         // Copy received permutations to all_permutations array
-        for (int i = 0; i <= strings_per_process; i++) {
-            strcpy(all_permutations[local_count], received_permutations[i]);
-            local_count++;
-            if (local_count >= total_strings) {
-                break;
-            }
-        }
+        // for (int i = 0; i <= strings_per_process; i++) {
+        //     strcpy(all_permutations[local_count], received_permutations[i]);
+        //     local_count++;
+        //     if (local_count >= total_strings) {
+        //         break;
+        //     }
+        // }
     }
 
     // // Free memory allocated for received_permutations
