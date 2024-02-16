@@ -126,7 +126,7 @@ char** format_strings(char **all_permutations, int num_processes) {
     printf("%d, %d.\n",total_rows,total_columns);
     
     // 2. Allocate the Output Array
-    char **formatted_strings = (char **)malloc(total_strings * sizeof(char *));
+    char **formatted_strings = (char **)malloc(total_columns * sizeof(char *));
     if (formatted_strings == NULL) {
         fprintf(stderr, "Memory allocation failed\n");
         exit(1);
@@ -136,12 +136,12 @@ char** format_strings(char **all_permutations, int num_processes) {
     int index = 0;
     for (int i = 0; i < num_processes; i++) {
         char *curr_string = all_permutations[i];
-        char *token = strtok(curr_string, " \n");
+        char *token = strtok(curr_string, " ");
         while (token != NULL) {
             formatted_strings[index] = (char *)malloc((strlen(token) + 1) * sizeof(char));
             strcpy(formatted_strings[index], token);
             index++;
-            token = strtok(NULL, " \n");
+            token = strtok(NULL, " ");
         }
     }
 
