@@ -117,7 +117,7 @@ char** format_strings(char **all_permutations, int num_processes) {
             if (curr_string[j] == '\n') {
                 total_rows++;
             }
-            if (curr_string[j] == " "){
+            if (curr_string[j] == ' '){
                 total_columns++;
             }
         }
