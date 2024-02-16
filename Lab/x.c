@@ -78,9 +78,15 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
     //     printf("\n%s\n", permutations[i]);
     // }
     // Send the whole permutations array to the last process
-    char *flattened_permutations = flatten(permutations, strings_per_process+1, max_length+1);
+    char *flattened = flatten(permutations, strings_per_process+1, max_length+1);
+     for (int i = 0; flattened[i] != '\0'; i++) {
+        if(flattened[i]==',')
+            continue;
+        printf("%c", flattened[i]);
+    }
+    printf("\n");
     MPI_Send(&flattened_permutations, (max_length + 1) * (strings_per_process + 1), MPI_CHAR, num_processes - 1, 0, MPI_COMM_WORLD);
-
+    
     // Free memory allocated for permutations
     for (int i = 0; i <= strings_per_process; i++) {
         free(permutations[i]);
