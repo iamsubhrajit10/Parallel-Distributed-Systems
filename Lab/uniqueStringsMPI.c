@@ -1,3 +1,6 @@
+/*Team 5
+Subhrajit, Anshika
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
