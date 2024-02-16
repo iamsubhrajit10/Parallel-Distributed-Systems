@@ -48,6 +48,7 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
     }
 
     // Print all generated strings
+    printf("\n");
     for (i = 0; i < local_count; i++) {
         printf("%s\n", all_strings[i]);
     }
