@@ -6,26 +6,32 @@
 #define MAX_CHAR_SET 62 // Total number of alphanumeric characters
 
 char* flatten(char **strings, int num_strings, int max_length) {
-    // Calculate total length needed for the flattened array
-    int total_length = num_strings * (max_length + 1); // Add 1 for null terminator for each string
+    // Calculate total length (with delimiter and null terminators)
+    int total_length = num_strings * max_length + num_strings + 1; 
 
-    // Allocate memory for the flattened array
+    // Allocate memory
     char *flattened_array = (char *)malloc(total_length * sizeof(char));
     if (flattened_array == NULL) {
         fprintf(stderr, "Memory allocation failed\n");
         exit(1);
     }
 
-    // Flatten the 2D array into the 1D array
+    // Flatten
     int index = 0;
     for (int i = 0; i < num_strings; i++) {
         int length = strlen(strings[i]);
+        // Copy individual string
         for (int j = 0; j < length; j++) {
             flattened_array[index++] = strings[i][j];
         }
-        flattened_array[index++] = ' '; // Add comma separator after each string
+        // Add delimiter (unless it's the last string)
+        if (i < num_strings - 1) {
+            flattened_array[index++] = ','; 
+       }
     }
 
+    // Null-terminate
+    flattened_array[index] = '\0';
     return flattened_array;
 }
 
@@ -86,21 +92,26 @@ void receive_permutations(int process_id, int num_processes, int max_length, int
         strings_per_process++;
     }
 
-    for (int src = 0; src < num_processes; src++) { // Loop only to receive data
-        int size = (strings_per_process + 1) * (max_length+1);
+    // Receive from each sender process
+    for (int src = 0; src < num_processes - 1; src++) { 
+        int size = (strings_per_process + 1) * (max_length + 1);
         char *received_data = (char *)malloc(size * sizeof(char));
         if (received_data == NULL) {
             fprintf(stderr, "Process %d: Memory allocation failed\n", process_id);
             MPI_Abort(MPI_COMM_WORLD, 1);
         }
 
+        // Receive synchronized with the sender
         MPI_Recv(received_data, size, MPI_CHAR, src, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        // all_permutations[src] = received_data; // Store received data
-        received_data[size-1]='\0';
-        printf("%s\n",received_data);
+
+        // Store the received data into the all_permutations array
+        all_permutations[src] = received_data; 
+        printf("%s\n", received_data);
+
+        // Free the temporary buffer
+        free(received_data); 
     }
 }
-
 int main(int argc, char *argv[]) {
     int process_id, num_processes;
     int X = 100; // Number of strings to generate
