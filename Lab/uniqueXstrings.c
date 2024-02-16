@@ -28,8 +28,10 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
                 idx = (process_id * MAX_CHAR_SET * (string_length - 1)) / num_processes;
                 str[j] = char_set[(idx + i) % MAX_CHAR_SET];
             }
+            // Null-terminate the string
+            str[string_length] = '\0';
             // Copy the generated string to the buffer
-            strcpy(&buffer[(local_count * max_length) + local_count], str);
+            strcpy(&buffer[(local_count * (max_length + 1)) + local_count], str);
             local_count++;
             if (local_count >= total_strings) {
                 break;
