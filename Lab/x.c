@@ -78,28 +78,24 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
     MPI_Send(flattened, strlen(flattened) + 1, MPI_CHAR, num_processes - 1, 0, MPI_COMM_WORLD);
 }
 
-void receive_permutations(int process_id, int num_processes, char **all_permutations, int mx) {
-    // Receive permutations from all processes except itself
-    for (int src = 0; src < num_processes; src++) { 
-        // Determine the size of the received data
-        MPI_Status status;
-        int size;
-        // Allocate memory for receiving data
-        char *received_data = (char *)malloc(size * sizeof(char));
+void receive_permutations(int process_id, int num_processes, int max_length, int total_strings, char **all_permutations) {
+  int strings_per_process = total_strings / num_processes;
+  if (total_strings % num_processes != 0) {
+    strings_per_process++;
+  }
+  char *received_data = (char *)malloc(size * sizeof(char));
         if (received_data == NULL) {
             fprintf(stderr, "Memory allocation failed\n");
             exit(1);
         }
-
+    size = (strings_per_process+1)*max_length;
         // Receive data
-        MPI_Recv(received_data,(strings_per_process + 1)*(mx), MPI_CHAR, src, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Recv(received_data, size, MPI_CHAR, src, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         // Store received data in the array
         printf("for proc:%d\n",src);
         printf("%s\n",received_data);
         all_permutations[src] = received_data;
-    }
 }
-
 int main(int argc, char *argv[]) {
     int process_id, num_processes;
     int X = 100; // Number of strings to generate
@@ -119,7 +115,7 @@ int main(int argc, char *argv[]) {
     }
     
     if (process_id == num_processes - 1) {
-        receive_permutations(process_id, num_processes - 1, all_permutations,N);
+        receive_permutations(process_id, num_processes - 1,N,X all_permutations);
 
         // Print received strings if desired
         // for (int i = 0; i < num_processes - 1; i++) {
