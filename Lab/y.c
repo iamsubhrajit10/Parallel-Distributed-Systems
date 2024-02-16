@@ -57,7 +57,7 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
         // x_permutations[i-1]=permutations[i];
         printf("%s\n", permutations[i]);
     }
-    printf("No of strings printed: %d, by process %d\n",strings_per_process,process_id);
+    //printf("No of strings printed: %d, by process %d\n",strings_per_process,process_id);
 }
 
 int main(int argc, char *argv[]) {
