@@ -134,9 +134,9 @@ int main(int argc, char *argv[]) {
         generate_permutations(char_set, start_index, end_index , max_length+1, "", 0, permutations, &counter, strings_per_process + 1);
         for (int i = 0; i <= X; i++) {
             printf("%s\n", permutations[i]);
-            free(all_permutations[i]);
+            free(permutations[i]);
         }
-           free(all_permutations);
+           free(permutations);
     } else {
         if (process_id == num_processes - 1) {
             receive_permutations(process_id, num_processes - 1, N, X, &all_permutations);
