@@ -44,14 +44,14 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
     }
     int start_index = (process_id * strings_per_process * MAX_CHAR_SET) / total_strings;
     int end_index = ((process_id + 1) * strings_per_process * MAX_CHAR_SET) / total_strings;
-   char **permutations = (char **)malloc(strings_per_process * sizeof(char *));
+   char **permutations = (char **)malloc((strings_per_process+1) * sizeof(char *));
     for (int i = 0; i < strings_per_process; i++) {
         permutations[i] = (char *)malloc((max_length + 1) * sizeof(char)); // +1 for null terminator
     }
     int counter = 0; // Counter to track the number of permutations generated
 
     // Generate permutations and store them in the 2D array
-    generate_permutations(char_set, start_index, end_index , max_length, "", 0, permutations, &counter, strings_per_process);
+    generate_permutations(char_set, start_index, end_index , max_length, "", 0, permutations, &counter, strings_per_process+1);
     
 
     // Print all generated strings
@@ -61,9 +61,9 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
     for (int i = 0; i <= strings_per_process; i++) {
         x_permutations[i] = (char *)malloc((max_length + 1) * sizeof(char)); // +1 for null terminator
     }
-    for (int i = 1; i <= counter; i++) {
-        x_permutations[i-1]=permutations[i];
-        printf("%s\n", x_permutations[i-1]);
+    for (int i = 0; i < counter; i++) {
+        x_permutations[i]=permutations[i+1];
+        printf("%s\n", x_permutations[i]);
     }
 
     // Free memory allocated for permutations
