@@ -52,26 +52,19 @@ int main(int argc, char *argv[]) {
     // Calculate the total number of strings
     int total_strings = X;
 
-    // Calculate the maximum possible length of the generated strings
-int max_possible_length = N + 1; // N characters plus '\0' terminator
-
-// Allocate memory for the buffer to store the generated strings
-char *buffer = (char *)malloc(total_strings * max_possible_length * sizeof(char));
-
+    // Allocate memory for the buffer to store the generated strings
+    char *buffer = (char *)malloc(total_strings * (N + 1) * sizeof(char));
 
     // Generate strings
     generate_strings(process_id, num_processes, N, total_strings, buffer);
 
-    // Send the generated strings to process 0
-    if (process_id != 0) {
-        MPI_Send(buffer, total_strings * (N + 1), MPI_CHAR, 0, 0, MPI_COMM_WORLD);
-    } else {
-        // Process 0 receives the generated strings from other processes
-        for (int i = 1; i < num_processes; i++) {
-            MPI_Recv(&buffer[i * total_strings * (N + 1)], total_strings * (N + 1), MPI_CHAR, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        }
+    // Gather all the generated strings to process 0
+    MPI_Gather(buffer, total_strings * (N + 1), MPI_CHAR, buffer, total_strings * (N + 1), MPI_CHAR, 0, MPI_COMM_WORLD);
 
-        // Process 0 outputs the generated strings
+    // Process 0 can now access all the generated strings in the buffer
+
+    // Output the generated strings from process 0
+    if (process_id == 0) {
         for (int i = 0; i < total_strings; i++) {
             printf("%s\n", &buffer[i * (N + 1)]);
         }
