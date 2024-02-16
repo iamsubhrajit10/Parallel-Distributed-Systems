@@ -50,7 +50,7 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
                 break;
         } 
     }
-    printf("Generated %d strings for process %d",process_id);
+    printf("Generated %d strings for process %d",local_count,process_id);
     printf("\n");
     // Print all generated strings
     for (i = 0; i < local_count; i++) {
