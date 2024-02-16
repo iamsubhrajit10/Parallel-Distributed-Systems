@@ -94,6 +94,7 @@ void receive_permutations(int process_id, int num_processes, int max_length, int
 
         MPI_Recv(received_data, size, MPI_CHAR, src, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         // all_permutations[src] = received_data; // Store received data
+        received_data[size-1]='\0';
         printf("%s\n",received_data);
     }
 }
