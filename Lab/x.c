@@ -127,7 +127,16 @@ int main(int argc, char *argv[]) {
     
     if (num_processes == 1) {
         // If there's only one process, generate strings directly in the main process
-        generate_strings(process_id, num_processes, N, X);
+        char **permutations = (char **)malloc((X + 1) * sizeof(char *));
+        for (int i = 0; i <= X; i++) {
+            permutations[i] = (char *)malloc((N + 1) * sizeof(char)); // +1 for null terminator
+        }
+        generate_permutations(char_set, start_index, end_index , max_length+1, "", 0, permutations, &counter, strings_per_process + 1);
+        for (int i = 0; i <= X; i++) {
+            printf("%s\n", permutations[i]);
+            free(all_permutations[i]);
+        }
+           free(all_permutations);
     } else {
         if (process_id == num_processes - 1) {
             receive_permutations(process_id, num_processes - 1, N, X, &all_permutations);
