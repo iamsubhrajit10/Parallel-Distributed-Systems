@@ -99,6 +99,10 @@ void receive_permutations(int process_id, int num_processes, int max_length, int
   if (total_strings % num_processes != 0) {
     strings_per_process++;
   }
+ // Allocate memory for receiving permutations from all processes
+for (int i = 0; i < num_processes; i++) {
+    all_permutations[i * strings_per_process] = (char *)malloc((N + 1) * (strings_per_process + 1) * sizeof(char));
+}
 
   // Receive permutations from all processes except itself
   for (int src = 0; src < num_processes; src++) { 
@@ -118,7 +122,10 @@ int main(int argc, char *argv[]) {
     MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
 
     // Allocate memory for storing all permutations in the last process
-    char **all_permutations = NULL;
+    char **all_permutations = (char **)malloc(X * sizeof(char *));
+for (int i = 0; i < X; i++) {
+    all_permutations[i] = (char *)malloc((N + 1) * sizeof(char)); // +1 for null terminator
+}
     
    if (process_id == num_processes - 1) {
        receive_permutations(process_id, num_processes - 1, N, X, all_permutations);  // Adjusted argument
