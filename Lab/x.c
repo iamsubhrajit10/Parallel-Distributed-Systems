@@ -52,14 +52,14 @@ void generate_strings(int process_id, int num_processes, int max_length, int tot
     int start_index = (process_id * total_strings * MAX_CHAR_SET) / num_processes;
     int end_index = ((process_id + 1) * total_strings * MAX_CHAR_SET) / num_processes;
 
-    char **permutations = (char **)malloc(x * sizeof(char *));
+    char **permutations = (char **)malloc(strings_per_process * sizeof(char *));
     for (int i = 0; i < x; i++) {
-        permutations[i] = (char *)malloc((n + 1) * sizeof(char)); // +1 for null terminator
+        permutations[i] = (char *)malloc((max_length + 1) * sizeof(char)); // +1 for null terminator
     }
     int counter = 0; // Counter to track the number of permutations generated
 
     // Generate permutations and store them in the 2D array
-    generate_permutations(char_set, start_index, end_index , strings_per_process, "", 0, permutations, &counter, x);
+    generate_permutations(char_set, start_index, end_index , max_length, "", 0, permutations, &counter, strings_per_process);
     
 
     // Print all generated strings
