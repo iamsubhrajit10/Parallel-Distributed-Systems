@@ -125,15 +125,20 @@ int main(int argc, char *argv[]) {
 
     
     
-    if (process_id == num_processes - 1) {
-        receive_permutations(process_id, num_processes - 1, N, X, &all_permutations); 
-        for (int i = 0; i < num_processes-1; i++) {
-          printf("%s\n", all_permutations[i]);
-          free(all_permutations[i]);
-        }
-        free(all_permutations); 
+    if (num_processes == 1) {
+        // If there's only one process, generate strings directly in the main process
+        generate_strings(process_id, num_processes, N, X);
     } else {
-        generate_strings(process_id, num_processes - 1, N, X);
+        if (process_id == num_processes - 1) {
+            receive_permutations(process_id, num_processes - 1, N, X, &all_permutations);
+            for (int i = 0; i < num_processes - 1; i++) {
+                printf("%s\n", all_permutations[i]);
+                free(all_permutations[i]);
+            }
+            free(all_permutations);
+        } else {
+            generate_strings(process_id, num_processes - 1, N, X);
+        }
     }
 
     MPI_Finalize();
