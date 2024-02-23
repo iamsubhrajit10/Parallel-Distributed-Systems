@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
         if (dst) { 
             ping_pong_count++;
             MPI_Rsend(&ping_pong_count, 1, MPI_INT, dst, 0, MPI_COMM_WORLD);  
-            printf("[%d] MPI_Rsend attempted (receiver may not be ready)\n", rank);
+            printf("[%d] MPI_Rsend attempted for count: %d (receiver may not be ready)\n", rank, ping_pong_count);
         } else { 
             // No immediate MPI_Recv - might lead to errors on the sender
             sleep(5);
