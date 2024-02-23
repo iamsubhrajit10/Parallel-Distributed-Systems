@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
             printf("[%d] Sent message - count: %d, destination: %d\n", rank, ping_pong_count, dst);
             fflush(stdout); 
         } else { 
-            // sleep(3); // Artificial delay on receiver
+            sleep(3); // Artificial delay on receiver
             MPI_Status status; // Declare status variable
              MPI_Recv(&ping_pong_count, 1, MPI_INT, dst, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
             printf("[%d] Received message (delayed) - count: %d, source: %d\n", rank, ping_pong_count, dst);
