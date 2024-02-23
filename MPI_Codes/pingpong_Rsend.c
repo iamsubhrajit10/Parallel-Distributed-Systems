@@ -5,7 +5,8 @@
 
 int main(int argc, char *argv[])
 {
-    int rank, size, ping_pong_count = 0, dst = 0, status = 0;
+    int rank, size, ping_pong_count = 0, dst = 0;
+    MPI_Status status;
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -13,7 +14,7 @@ int main(int argc, char *argv[])
     while (ping_pong_count < MAX_PING_PONG_COUNT) {
         dst = (rank + 1) % 2;
 
-        if (ping_pong_count % 2) { 
+        if (dst) { 
             ping_pong_count++;
             MPI_Rsend(&ping_pong_count, 1, MPI_INT, dst, 0, MPI_COMM_WORLD);  
             printf("[%d] MPI_Rsend attempted (receiver may not be ready)\n", rank);
