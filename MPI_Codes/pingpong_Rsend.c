@@ -1,5 +1,6 @@
 #include <mpi.h>
 #include <stdio.h>
+#include <unistd.h>
 #define MAX_PING_PONG_COUNT (100)
 
 int main(int argc, char *argv[])
@@ -18,6 +19,7 @@ int main(int argc, char *argv[])
             printf("[%d] MPI_Rsend attempted (receiver may not be ready)\n", rank);
         } else { 
             // No immediate MPI_Recv - might lead to errors on the sender
+            // sleep(5);
             MPI_Recv(&ping_pong_count, 1, MPI_INT, dst, 0, MPI_COMM_WORLD, &status);
             printf("[%d] Received message - count: %d, source: %d\n", rank, ping_pong_count, dst);
         }
