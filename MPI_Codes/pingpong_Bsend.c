@@ -4,7 +4,8 @@
 
 int main(int argc, char *argv[])
 {
-    int rank, size, ping_pong_count = 0, dst = 0, status = 0;
+    int rank, size, ping_pong_count = 0, dst = 0;
+    MPI_Status status;
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -12,7 +13,7 @@ int main(int argc, char *argv[])
     while (ping_pong_count < MAX_PING_PONG_COUNT) {
         dst = (rank + 1) % 2;
 
-        int buffer_size = ...;
+        int buffer_size = 1024;
         char buffer[buffer_size]; 
         MPI_Buffer_attach(buffer, buffer_size); 
 
