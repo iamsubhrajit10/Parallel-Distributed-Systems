@@ -14,13 +14,13 @@ int main(int argc, char *argv[])
     while (ping_pong_count < MAX_PING_PONG_COUNT) {
         dst = (rank + 1) % 2;
 
-        if (dst) { 
+        if (ping_pong_count % 2) { 
             ping_pong_count++;
             MPI_Rsend(&ping_pong_count, 1, MPI_INT, dst, 0, MPI_COMM_WORLD);  
             printf("[%d] MPI_Rsend attempted (receiver may not be ready)\n", rank);
         } else { 
             // No immediate MPI_Recv - might lead to errors on the sender
-            // sleep(5);
+            sleep(5);
             MPI_Recv(&ping_pong_count, 1, MPI_INT, dst, 0, MPI_COMM_WORLD, &status);
             printf("[%d] Received message - count: %d, source: %d\n", rank, ping_pong_count, dst);
         }
