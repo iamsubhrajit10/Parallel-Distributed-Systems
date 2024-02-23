@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
                     printf("[%d] Timeout! Send to %d likely incomplete\n", rank, dst);
                 }  
             } else { 
+                sleep(3);
                 MPI_Recv(&ping_pong_count, 1, MPI_INT, dst, 0, MPI_COMM_WORLD, &status); 
                 printf("[%d] Received message - count: %d, source: %d\n", rank, ping_pong_count, dst);
             } 
