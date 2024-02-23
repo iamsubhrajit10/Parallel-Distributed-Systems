@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 
         if (dst) { 
             ping_pong_count++;
-             MPI_Send(&ping_pong_count, 1, MPI_INT, dst, MPI_ANY_TAG, MPI_COMM_WORLD); 
+             MPI_Send(&ping_pong_count, 1, MPI_INT, dst, 0, MPI_COMM_WORLD); 
             printf("[%d] Sent message - count: %d, destination: %d\n", rank, ping_pong_count, dst);
             fflush(stdout); 
         } else { 
