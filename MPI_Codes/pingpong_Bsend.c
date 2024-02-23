@@ -1,5 +1,6 @@
 #include <mpi.h>
 #include <stdio.h>
+#include <unistd.h>
 #define MAX_PING_PONG_COUNT (100)
 
 int main(int argc, char *argv[])
@@ -19,11 +20,13 @@ int main(int argc, char *argv[])
 
         if (dst) { // Sender
             ping_pong_count++;
+            buffer[0]='Y';
             printf("[%d] Before send, buffer[0]: %c\n", rank, buffer[0]);
             MPI_Bsend(&ping_pong_count, 1, MPI_INT, dst, 0, MPI_COMM_WORLD);  
             buffer[0] = 'X'; // Potentially unsafe
             printf("[%d] After send (may be unsafe), buffer[0]: %c\n", rank, buffer[0]);
         } else { // Receiver
+            sleep(3);
             MPI_Recv(&ping_pong_count, 1, MPI_INT, dst, 0, MPI_COMM_WORLD, &status);
             printf("[%d] Received message - count: %d, source: %d\n", rank, ping_pong_count, dst);
         } 
