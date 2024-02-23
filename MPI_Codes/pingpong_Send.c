@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     while (ping_pong_count < MAX_PING_PONG_COUNT) {
         dst = (rank + 1) % 2;
 
-        if (ping_pong_count % 2) { 
+        if (dst) { 
             ping_pong_count++;
              MPI_Send(&ping_pong_count, 1, MPI_INT, dst, MPI_ANY_TAG, MPI_COMM_WORLD); 
             printf("[%d] Sent message - count: %d, destination: %d\n", rank, ping_pong_count, dst);
