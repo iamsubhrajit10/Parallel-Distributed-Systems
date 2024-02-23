@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
         char buffer[buffer_size]; 
         MPI_Buffer_attach(buffer, buffer_size); 
 
-        if (ping_pong_count % 2) { // Sender
+        if (dst) { // Sender
             ping_pong_count++;
             printf("[%d] Before send, buffer[0]: %c\n", rank, buffer[0]);
             MPI_Bsend(&ping_pong_count, 1, MPI_INT, dst, 0, MPI_COMM_WORLD);  
