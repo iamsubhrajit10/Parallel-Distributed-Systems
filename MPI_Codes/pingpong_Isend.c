@@ -6,6 +6,7 @@
 int main(int argc, char *argv[])
 {
     int rank, size, ping_pong_count = 0, dst = 0;
+    char ch;
     MPI_Status status;
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -17,7 +18,8 @@ int main(int argc, char *argv[])
            if (dst) { 
                 ping_pong_count++;
                 MPI_Request req;
-                MPI_Isend(&ping_pong_count, 1, MPI_INT, dst, 0, MPI_COMM_WORLD, &req);
+                ch ='XY';
+                MPI_Isend(&ch, 2, MPI_CHAR, dst, 0, MPI_COMM_WORLD, &req);
                 printf("[%d] Sent message (non-blocking) - count: %d, destination: %d\n", rank, ping_pong_count, dst);
 
                 // ... other work...
@@ -32,7 +34,7 @@ int main(int argc, char *argv[])
                 }  
             } else { 
                 sleep(3);
-                MPI_Recv(&ping_pong_count, 1, MPI_INT, dst, 0, MPI_COMM_WORLD, &status); 
+                MPI_Recv(&ch, 2, MPI_CHAR, dst, 0, MPI_COMM_WORLD, &status); 
                 printf("[%d] Received message - count: %d, source: %d\n", rank, ping_pong_count, dst);
             } 
 
