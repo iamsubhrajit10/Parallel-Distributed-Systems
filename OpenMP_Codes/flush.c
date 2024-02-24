@@ -4,7 +4,7 @@
 int main() {
     int x = 0;
 
-    #pragma omp parallel default(none)
+    #pragma omp parallel default(none) private(x)
     {
         // Simulating some parallel computation
         int thread_id = omp_get_thread_num();
