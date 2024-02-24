@@ -6,7 +6,7 @@ int main(int argc, char** argv) {
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
-
+    printf("Program1 size: %d\n",size);
     if (size != 5) {
         printf("This program must be run with 3 processes.\n");
         MPI_Finalize();
