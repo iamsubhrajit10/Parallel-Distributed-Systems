@@ -7,7 +7,9 @@
 int main()
 {
     int rank, size, ping_pong_count = 0, dst = 0, status = 0;
-    MPI_Init();
+    int a;
+    char arg[1][2];
+    MPI_Init(&a,&arg);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
