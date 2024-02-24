@@ -4,10 +4,10 @@
 
 #define MAX_PING_PONG_COUNT (100)
 
-int main(int argc, char *argv[])
+int main()
 {
     int rank, size, ping_pong_count = 0, dst = 0, status = 0;
-    MPI_Init(&argc, &argv);
+    MPI_Init();
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
