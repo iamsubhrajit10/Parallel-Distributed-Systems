@@ -7,9 +7,20 @@
 int main()
 {
     int rank, size, ping_pong_count = 0, dst = 0, status = 0;
-    int a;
-    char arg[1][2];
-    MPI_Init(&a,&arg);
+    int a=3;
+    char **argv = (char **)malloc(3 * sizeof(char *));
+    
+    // Allocate memory for each string in the array
+    for (int i = 0; i < 3; i++) {
+        argv[i] = (char *)malloc(10 * sizeof(char)); // Assuming a maximum length of 10 characters for each string
+    }
+    
+    // Copy the strings into the array
+    strcpy(argv[0], "_Send");
+    strcpy(argv[1], "-n");
+    strcpy(argv[2], "2");
+    
+    MPI_Init(&a,&argv);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
