@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
            if (dst) { 
                 ping_pong_count++;
                 MPI_Request req;
-                ch ='XY';
+                ch ="XY";
                 MPI_Isend(&ch, 2, MPI_CHAR, dst, 0, MPI_COMM_WORLD, &req);
                 printf("[%d] Sent message (non-blocking) - count: %d, destination: %d\n", rank, ping_pong_count, dst);
 
