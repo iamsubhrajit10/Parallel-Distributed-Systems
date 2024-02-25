@@ -8,6 +8,8 @@
 
 int main() {
     // Allocate memory for the DNA_String array
+    char DNA[] = {'A', 'C', 'G', 'T'};
+    int count_array[10]; // Array to store the count of DNA strings for each length
     char (*DNA_String)[COLS][LENGTH] = malloc(ROWS * sizeof(*DNA_String));
     
     if (DNA_String == NULL) {
