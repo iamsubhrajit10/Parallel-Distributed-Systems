@@ -2,12 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 int main() {
-    char DNA[] = {'A', 'C', 'G', 'T'};
+    char DNA[] = {'A', 'C', 'G', 'T', '\0'}; // Terminating with null character
     char DNA_String[11][1024][12]; // 3D array for DNA strings with space for the null terminator
     int count_array[10]; // Array to store the count of DNA strings for each length
 
@@ -15,7 +11,7 @@ int main() {
     for (int i = 0; i < 4; i++) {
         DNA_String[0][i][0] = DNA[i];
         DNA_String[0][i][1] = '\0'; // Null terminator
-        printf("%s\n",DNA_String[0][i]);
+        printf("%s\n", DNA_String[0][i]);
     }
     
 
@@ -25,19 +21,11 @@ int main() {
         int index = 0;
         for (int j = 0; j < 4; j++) {
             for (int i = 0; i < count; i++) {
-                // Inside the loop where you use strcpy
-                printf("Copying: %s to %s\n", DNA_String[length - 1][i], DNA_String[length][index]);
                 strcpy(DNA_String[length][index], DNA_String[length - 1][i]);
-                printf("%s\n",DNA_String[length][index]);
                 DNA_String[length][index][strlen(DNA_String[length][index])] = DNA[j];
-                printf("%s\n",DNA_String[length][index]);
                 index++;
-                
             }
         }
-        // if (length == 1){
-        //         exit(0);
-        // }
         count = index; // Update count for the next length
         count_array[length - 1] = count; // Store the count for this length
     }
