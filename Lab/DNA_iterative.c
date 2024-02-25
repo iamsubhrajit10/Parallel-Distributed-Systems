@@ -26,7 +26,7 @@ int main() {
 
     // Generate DNA strings
     int count = 4;
-    for (int length = 1; length <= 7; length++) {
+    for (int length = 1; length <= 8; length++) {
         int index = 0;
         for (int j = 0; j < 4; j++) {
             for (int i = 0; i < count; i++) {
