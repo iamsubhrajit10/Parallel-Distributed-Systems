@@ -42,7 +42,7 @@ int main() {
     }
 
     // Print the DNA strings
-    for (int len = 1; len <= 10; len++) {
+    for (int len = 1; len <= LENGTH; len++) {
         printf("DNA strings of length %d:\n", len);
         for (int i = 0; i < count_array[len - 1]; i++) {
             printf("%s\n", DNA_String[len][i]);
