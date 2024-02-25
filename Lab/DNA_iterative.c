@@ -23,6 +23,7 @@ int main() {
             for (int i = 0; i < count; i++) {
                 strcpy(DNA_String[length][index], DNA_String[length - 1][i]);
                 DNA_String[length][index][strlen(DNA_String[length][index])] = DNA[j];
+                DNA_String[length][index][strlen(DNA_String[length][index])+1] = '\0';
                 printf("%s  ,%d,%d,%d\n",DNA_String[length][index],i,j,length);
                 index++;
             }
