@@ -23,7 +23,10 @@ int main() {
         int index = 0;
         for (int j = 0; j < 4; j++) {
             for (int i = 0; i < count; i++) {
+                // Inside the loop where you use strcpy
+                printf("Copying: %s to %s\n", DNA_String[length - 1][i], DNA_String[length][index]);
                 strcpy(DNA_String[length][index], DNA_String[length - 1][i]);
+
                 strcat(DNA_String[length][index], &DNA[j]);
                 index++;
             }
