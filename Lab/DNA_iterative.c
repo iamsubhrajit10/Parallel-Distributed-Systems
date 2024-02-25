@@ -11,18 +11,20 @@ int main() {
         String[0][i][0] = DNA[i];
         String[0][i][1] = '\0';
     }
-
     // Generate DNA strings
+    int count = 4;
     for (int length = 1; length <= 10; length++) {
         int index = 0;
         for (int j = 0; j < 4; j++) {
-            for (int i = 0; i < index; i++) {
+            for (int i = 0; i < count; i++) {
                 strcpy(String[length][index], String[length - 1][i]);
                 strncat(String[length][index], &DNA[j], 1);
                 index++;
             }
         }
+        count = index;
     }
+
 
     // Print the DNA strings
     for (int len = 1; len <= 10; len++) {
