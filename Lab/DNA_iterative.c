@@ -30,9 +30,9 @@ int main() {
                 strcat(DNA_String[length][index], &DNA[j]);
                 index++;
             }
-            if (length == 2){
+        }
+        if (length == 1){
                 exit(0);
-            }
         }
         count = index; // Update count for the next length
         count_array[length - 1] = count; // Store the count for this length
