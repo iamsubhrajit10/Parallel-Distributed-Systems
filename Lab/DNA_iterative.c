@@ -30,7 +30,7 @@ int main() {
                 strcat(DNA_String[length][index], &DNA[j]);
                 index++;
             }
-            if (length == 1){
+            if (length == 2){
                 exit(0);
             }
         }
