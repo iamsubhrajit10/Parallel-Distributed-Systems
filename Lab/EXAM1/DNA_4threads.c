@@ -41,7 +41,7 @@ int main() {
         count = index; // Update count for the next length
         count_array[length - 1] = count; // Store the count for this length
     }
-
+    #pragma omp barrier
     // Print the DNA strings
     for (int len = 1; len <= LENGTH; len++) {
         printf("DNA strings of length %d:\n", len);
