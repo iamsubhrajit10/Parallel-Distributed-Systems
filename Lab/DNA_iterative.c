@@ -12,7 +12,7 @@ int main() {
         String[0][i][1] = '\0';
     }
     // Generate DNA strings
-    int count_array[4];
+    int count_array[10];
     // Generate DNA strings
 int count = 4;
 for (int length = 1; length <= 10; length++) {
@@ -33,7 +33,7 @@ for (int length = 1; length <= 10; length++) {
     // Print the DNA strings
     for (int len = 1; len <= 10; len++) {
         printf("DNA strings of length %d:\n", len);
-        for (int i = 0; i < count_array[i]; i++) {
+        for (int i = 0; i < count_array[len-1]; i++) {
             printf("%s\n", String[len][i]);
         }
         printf("\n");
