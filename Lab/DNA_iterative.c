@@ -3,7 +3,7 @@
 #include <string.h>
 
 #define ROWS 11
-#define COLS 262144
+#define COLS 65536
 #define LENGTH 13
 
 int main() {
