@@ -28,7 +28,9 @@ int main() {
                 strcpy(DNA_String[length][index], DNA_String[length - 1][i]);
 
                 strcat(DNA_String[length][index], &DNA[j]);
+                printf("%s\n",DNA_String[length][index]);
                 index++;
+                
             }
         }
         if (length == 1){
