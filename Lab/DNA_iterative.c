@@ -9,13 +9,31 @@
 int main() {
     // Allocate memory for the DNA_String array
     char (*DNA_String)[COLS][LENGTH] = malloc(ROWS * sizeof(*DNA_String));
-    int count_array[10]; // Array to store the count of DNA strings for each length
+    
+    if (DNA_String == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
 
-    // Initialize the first row with DNA characters
-    for (int i = 0; i < 4; i++) {
-        DNA_String[0][i][0] = DNA[i];
-        DNA_String[0][i][1] = '\0'; // Null terminator
-        printf("%s\n", DNA_String[0][i]);
+    // Initialize the array
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLS; j++) {
+            for (int k = 0; k < LENGTH; k++) {
+                // For demonstration, set each character to a specific value
+                DNA_String[i][j][k] = 'A' + (i + j + k) % 26;
+            }
+        }
+    }
+
+    // Access and print elements of the array
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLS; j++) {
+            printf("DNA_String[%d][%d]: ", i, j);
+            for (int k = 0; k < LENGTH; k++) {
+                printf("%c", DNA_String[i][j][k]);
+            }
+            printf("\n");
+        }
     }
     
 
