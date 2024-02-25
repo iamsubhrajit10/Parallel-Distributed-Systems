@@ -25,7 +25,7 @@ for (int length = 1; length <= 10; length++) {
         }
     }
     count = index; // Update count for the next length
-    count_array[len-1]=count;
+    count_array[length-1]=count;
 }
 
 
