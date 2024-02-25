@@ -17,17 +17,12 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    // Access and print elements of the array
-    for (int i = 0; i < ROWS; i++) {
-        for (int j = 0; j < COLS; j++) {
-            printf("DNA_String[%d][%d]: ", i, j);
-            for (int k = 0; k < LENGTH; k++) {
-                printf("%c", DNA_String[i][j][k]);
-            }
-            printf("\n");
-        }
+    // Initialize the first row with DNA characters
+    for (int i = 0; i < 4; i++) {
+        DNA_String[0][i][0] = DNA[i];
+        DNA_String[0][i][1] = '\0'; // Null terminator
+        printf("%s\n",DNA_String[0][i]);
     }
-    
 
     // Generate DNA strings
     int count = 4;
