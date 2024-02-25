@@ -4,7 +4,7 @@
 
 #define ROWS 11
 #define COLS 65536
-#define LENGTH 13
+#define LENGTH 12
 
 int main() {
     // Allocate memory for the DNA_String array
