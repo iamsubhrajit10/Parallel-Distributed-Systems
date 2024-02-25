@@ -30,7 +30,7 @@ int main() {
     for (int length = 1; length <= LENGTH; length++) {
         int index = 0;
         for (int j = 0; j < 4; j++) {
-          #pragma omp parallel for NUM_THREADS(4)
+          #pragma omp parallel for num_threads(4)
             for (int i = 0; i < count; i++) {
                 strcpy(DNA_String[length][index], DNA_String[length - 1][i]);
                 DNA_String[length][index][strlen(DNA_String[length][index])] = DNA[j];
