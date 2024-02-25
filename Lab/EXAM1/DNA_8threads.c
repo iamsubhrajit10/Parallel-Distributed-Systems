@@ -33,11 +33,14 @@ int main() {
             int i=0;
           #pragma omp parallel for num_threads(8) shared(j,length,DNA_String,index)
             for (i = 0; i < count; i++) {
-                strcpy(DNA_String[length][index], DNA_String[length - 1][i]);
-                DNA_String[length][index][strlen(DNA_String[length][index])] = DNA[j];
-                DNA_String[length][index][strlen(DNA_String[length][index])+1] = '\0';
-                #pragma omp atomic
-                index++;
+                #pragma omp critical
+                {
+                    strcpy(DNA_String[length][index], DNA_String[length - 1][i]);
+                    DNA_String[length][index][strlen(DNA_String[length][index])] = DNA[j];
+                    DNA_String[length][index][strlen(DNA_String[length][index])+1] = '\0';
+                    
+                    index++;
+                }
             }
           #pragma omp barrier
         }
