@@ -28,17 +28,26 @@ int main() {
 
     // Generate DNA strings
     int count = 4;
+    int index = 0; // Initialize index
+    int num_threads = omp_get_max_threads(); // Get the number of threads
     for (int length = 1; length <= LENGTH; length++) {
-        int index = 0;
-        for (int j = 0; j < 4; j++) {
-        #pragma omp parallel for num_threads(8) shared(length, DNA_String, count) reduction(+:index)
-        for (int i = 0; i < count; i++) {
-            strcpy(DNA_String[length][index], DNA_String[length - 1][i]);
-            int curr_len = strlen(DNA_String[length][index]);
-            DNA_String[length][index][curr_len] = DNA[j];
-            DNA_String[length][index][curr_len + 1] = '\0';
-            index++;
-        }
+        #pragma omp parallel num_threads(num_threads) shared(index, count, DNA_String, DNA) private(i)
+        {
+            int tid = omp_get_thread_num(); // Get thread ID
+            int chunk_size = count / num_threads; // Calculate chunk size
+            int start = tid * chunk_size; // Calculate starting index for this thread
+            int end = (tid == num_threads - 1) ? count : start + chunk_size; // Calculate ending index for this thread
+
+            for (int j = 0; j < 4; j++) {
+                for (int i = start; i < end; i++) {
+                    strcpy(DNA_String[length][index], DNA_String[length - 1][i]);
+                    int curr_len = strlen(DNA_String[length][index]);
+                    DNA_String[length][index][curr_len] = DNA[j];
+                    DNA_String[length][index][curr_len + 1] = '\0';
+                    #pragma omp atomic // Ensure atomic increment of index
+                    index++;
+                }
+            }
         }
         count = index; // Update count for the next length
         count_array[length - 1] = count; // Store the count for this length
@@ -52,6 +61,9 @@ int main() {
         }
         printf("\n");
     }
+
+    // Free allocated memory
+    free(DNA_String);
 
     return 0;
 }
