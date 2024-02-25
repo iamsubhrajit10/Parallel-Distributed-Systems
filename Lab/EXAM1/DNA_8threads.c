@@ -31,7 +31,7 @@ int main() {
         int index = 0;
         for (int j = 0; j < 4; j++) {
             int i=0;
-          #pragma omp parallel for num_threads(8) shared(j,length,DNA_String,index)
+          #pragma omp parallel for num_threads(16) shared(j,length,DNA_String,index)
             for (i = 0; i < count; i++) {
                 #pragma omp critical
                 {
