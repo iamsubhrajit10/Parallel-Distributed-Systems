@@ -4,13 +4,14 @@
 
 #define ROWS 11
 #define COLS 65536
-#define LENGTH 11
+#define Z 11
+#deine LENGTH 10
 
 int main() {
     // Allocate memory for the DNA_String array
     char DNA[] = {'A', 'C', 'G', 'T'};
     int count_array[10]; // Array to store the count of DNA strings for each length
-    char (*DNA_String)[COLS][LENGTH] = malloc(ROWS * sizeof(*DNA_String));
+    char (*DNA_String)[COLS][Z] = malloc(ROWS * sizeof(*DNA_String));
     
     if (DNA_String == NULL) {
         fprintf(stderr, "Memory allocation failed\n");
@@ -26,7 +27,7 @@ int main() {
 
     // Generate DNA strings
     int count = 4;
-    for (int length = 1; length <= 8; length++) {
+    for (int length = 1; length <= LENGTH; length++) {
         int index = 0;
         for (int j = 0; j < 4; j++) {
             for (int i = 0; i < count; i++) {
