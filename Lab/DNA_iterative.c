@@ -17,16 +17,6 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    // Initialize the array
-    for (int i = 0; i < ROWS; i++) {
-        for (int j = 0; j < COLS; j++) {
-            for (int k = 0; k < LENGTH; k++) {
-                // For demonstration, set each character to a specific value
-                DNA_String[i][j][k] = 'A' + (i + j + k) % 26;
-            }
-        }
-    }
-
     // Access and print elements of the array
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
