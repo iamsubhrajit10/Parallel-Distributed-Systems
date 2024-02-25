@@ -2,9 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define ROWS 11
+#define COLS 262144
+#define LENGTH 13
+
 int main() {
-    char DNA[] = {'A', 'C', 'G', 'T', '\0'}; // Terminating with null character
-    char DNA_String[11][262144][13]; // 3D array for DNA strings with space for the null terminator
+    // Allocate memory for the DNA_String array
+    char (*DNA_String)[COLS][LENGTH] = malloc(ROWS * sizeof(*DNA_String));
     int count_array[10]; // Array to store the count of DNA strings for each length
 
     // Initialize the first row with DNA characters
