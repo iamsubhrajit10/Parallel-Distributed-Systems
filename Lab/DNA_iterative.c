@@ -4,7 +4,7 @@
 
 int main() {
     char DNA[] = {'A', 'C', 'G', 'T', '\0'}; // Terminating with null character
-    char DNA_String[11][102400][12]; // 3D array for DNA strings with space for the null terminator
+    char DNA_String[11][10240][12]; // 3D array for DNA strings with space for the null terminator
     int count_array[10]; // Array to store the count of DNA strings for each length
 
     // Initialize the first row with DNA characters
