@@ -13,19 +13,21 @@ int main() {
     }
     // Generate DNA strings
     int count_array[4];
-    int count = 4;
-    for (int length = 1; length <= 10; length++) {
-        int index = 0;
-        for (int j = 0; j < 4; j++) {
-            for (int i = 0; i < count; i++) {
-                strcpy(String[length][index], String[length - 1][i]);
-                strncat(String[length][index], &DNA[j], 1);
-                index++;
-            }
+    // Generate DNA strings
+int count = 4;
+for (int length = 1; length <= 10; length++) {
+    int index = 0;
+    for (int j = 0; j < 4; j++) {
+        for (int i = 0; i < count; i++) {
+            strcpy(String[length][index], String[length - 1][i]);
+            strncat(String[length][index], &DNA[j], 1);
+            index++;
         }
-        count = index;
-        count_array[length-1]=count;
     }
+    count = index; // Update count for the next length
+    count_array[len-1]=count;
+}
+
 
 
     // Print the DNA strings
