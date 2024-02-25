@@ -2,15 +2,19 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 int main() {
     char DNA[] = {'A', 'C', 'G', 'T'};
-    char String[11][1024][12]; // 3D array for DNA strings with space for the null terminator
+    char DNA_String[11][1024][12]; // 3D array for DNA strings with space for the null terminator
     int count_array[10]; // Array to store the count of DNA strings for each length
 
     // Initialize the first row with DNA characters
     for (int i = 0; i < 4; i++) {
-        String[0][i][0] = DNA[i];
-        String[0][i][1] = '\0'; // Null terminator
+        DNA_String[0][i][0] = DNA[i];
+        DNA_String[0][i][1] = '\0'; // Null terminator
     }
 
     // Generate DNA strings
@@ -19,8 +23,8 @@ int main() {
         int index = 0;
         for (int j = 0; j < 4; j++) {
             for (int i = 0; i < count; i++) {
-                strcpy(String[length][index], String[length - 1][i]);
-                strcat(String[length][index], &DNA[j]);
+                strcpy(DNA_String[length][index], DNA_String[length - 1][i]);
+                strcat(DNA_String[length][index], &DNA[j]);
                 index++;
             }
         }
@@ -32,7 +36,7 @@ int main() {
     for (int len = 1; len <= 10; len++) {
         printf("DNA strings of length %d:\n", len);
         for (int i = 0; i < count_array[len - 1]; i++) {
-            printf("%s\n", String[len][i]);
+            printf("%s\n", DNA_String[len][i]);
         }
         printf("\n");
     }
