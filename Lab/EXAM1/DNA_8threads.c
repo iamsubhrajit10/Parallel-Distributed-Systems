@@ -31,7 +31,7 @@ int main() {
     int index = 0; // Initialize index
     int num_threads = omp_get_max_threads(); // Get the number of threads
     for (int length = 1; length <= LENGTH; length++) {
-        #pragma omp parallel num_threads(num_threads) shared(index, count, DNA_String, DNA) private(i)
+        #pragma omp parallel num_threads(num_threads) shared(index, count, DNA_String, DNA) 
         {
             int tid = omp_get_thread_num(); // Get thread ID
             int chunk_size = count / num_threads; // Calculate chunk size
