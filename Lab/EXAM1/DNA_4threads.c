@@ -31,14 +31,14 @@ int main() {
         int index = 0;
         for (int j = 0; j < 4; j++) {
             int i=0;
-          #pragma omp parallel for num_threads(4) shared(index)
+          #pragma omp parallel for num_threads(4) shared(index,j,length)
             for (i = 0; i < count; i++) {
                 strcpy(DNA_String[length][index], DNA_String[length - 1][i]);
                 DNA_String[length][index][strlen(DNA_String[length][index])] = DNA[j];
                 DNA_String[length][index][strlen(DNA_String[length][index])+1] = '\0';
                 index++;
             }
-             #pragma omp barrier
+          #pragma omp barrier
         }
         count = index; // Update count for the next length
         count_array[length - 1] = count; // Store the count for this length
