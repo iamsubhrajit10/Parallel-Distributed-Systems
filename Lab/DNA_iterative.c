@@ -15,7 +15,9 @@ int main() {
     for (int i = 0; i < 4; i++) {
         DNA_String[0][i][0] = DNA[i];
         DNA_String[0][i][1] = '\0'; // Null terminator
+        printf("%s\n",DNA_String[0][i]);
     }
+    
 
     // Generate DNA strings
     int count = 4;
@@ -26,7 +28,6 @@ int main() {
                 // Inside the loop where you use strcpy
                 printf("Copying: %s to %s\n", DNA_String[length - 1][i], DNA_String[length][index]);
                 strcpy(DNA_String[length][index], DNA_String[length - 1][i]);
-
                 strcat(DNA_String[length][index], &DNA[j]);
                 printf("%s\n",DNA_String[length][index]);
                 index++;
