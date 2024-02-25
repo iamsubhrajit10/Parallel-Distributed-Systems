@@ -7,7 +7,8 @@ int main() {
     int sum = 0;
     int array[N] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}; // Example array
 
-    #pragma omp parallel {
+    #pragma omp parallel 
+    {
         // do some parallel computation
 
         #pragma omp for
