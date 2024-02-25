@@ -20,7 +20,7 @@ int main() {
         for (int j = 0; j < 4; j++) {
             for (int i = 0; i < count; i++) {
                 strcpy(String[length][index], String[length - 1][i]);
-                strncat(String[length][index], &DNA[j], 1);
+                strcat(String[length][index], &DNA[j]);
                 index++;
             }
         }
