@@ -29,7 +29,7 @@ int main() {
                 printf("Copying: %s to %s\n", DNA_String[length - 1][i], DNA_String[length][index]);
                 strcpy(DNA_String[length][index], DNA_String[length - 1][i]);
                 printf("%s\n",DNA_String[length][index]);
-                strcat(DNA_String[length][index], &DNA[j]);
+                strcat(DNA_String[length][index], DNA[j]);
                 printf("%s\n",DNA_String[length][index]);
                 index++;
                 
