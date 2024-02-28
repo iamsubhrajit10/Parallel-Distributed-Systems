@@ -279,7 +279,7 @@ int main(int argc, char** argv) {
 
     // Create a window for file locking
     MPI_Win_create(NULL, 0, 1, MPI_INFO_NULL, MPI_COMM_WORLD, &file_lock);
-    sleep(1); // Add a brief pause for synchronization
+    
 
     // Initialize records here
     
@@ -296,6 +296,7 @@ int main(int argc, char** argv) {
             MPI_Bcast(&current_arrival_time, 1, MPI_INT, 0, MPI_COMM_WORLD);
         }
     } else { // Worker processes
+        sleep(1); // Add a brief pause for synchronization
         int received_arrival_time;
         // Receive the current arrival time from the master process
         MPI_Bcast(&received_arrival_time, 1, MPI_INT, 0, MPI_COMM_WORLD);
