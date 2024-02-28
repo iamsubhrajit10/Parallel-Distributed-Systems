@@ -289,9 +289,9 @@ int main(int argc, char** argv) {
         sendNumberOfClients();
         for (int i = 0; i < num_records; i++) {
             printf("Current Time: %d, Pid: %dd, Pid.arrival time: %d\n", current_arrival_time, records[i].player_id, records[i].arrival_time);
-            // if (records[i].arrival_time > current_arrival_time) {
-            //     sleep(records[i].arrival_time - current_arrival_time);
-            // }
+            if (records[i].arrival_time > current_arrival_time) {
+                sleep(records[i].arrival_time - current_arrival_time);
+            }
             //Broadcast the current arrival time to all processes
             printf("Turn: %d\n", i);
             current_arrival_time = records[i].arrival_time;
