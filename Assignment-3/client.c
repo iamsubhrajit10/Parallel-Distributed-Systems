@@ -289,11 +289,10 @@ int main(int argc, char** argv) {
         sendNumberOfClients();
         for (int i = 0; i < num_records; i++) {
             printf("Current Time: %d, Pid: %dd, Pid.arrival time: %d\n", current_arrival_time, records[i].player_id, records[i].arrival_time);
-            if (records[i].arrival_time > current_arrival_time) {
-                sleep(records[i].arrival_time - current_arrival_time);
-
-            }
-            // Broadcast the current arrival time to all processes
+            // if (records[i].arrival_time > current_arrival_time) {
+            //     sleep(records[i].arrival_time - current_arrival_time);
+            // }
+            //Broadcast the current arrival time to all processes
             printf("Turn: %d\n", i);
             current_arrival_time = records[i].arrival_time;
             MPI_Bcast(&current_arrival_time, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -304,9 +303,9 @@ int main(int argc, char** argv) {
         // Receive the current arrival time from the master process
         MPI_Bcast(&received_arrival_time, 1, MPI_INT, 0, MPI_COMM_WORLD);
         int record_no = world_rank - 1;
-        while (records[record_no].arrival_time != received_arrival_time) {
+        while (records[record_no].arrival_time = received_arrival_time) {
             // Wait until the arrival time matches
-            sleep(records[record_no].arrival_time - received_arrival_time);
+            // sleep(records[record_no].arrival_time - received_arrival_time);
             MPI_Bcast(&received_arrival_time, 1, MPI_INT, 0, MPI_COMM_WORLD);
         }
         printf("Player-ID:%d with arrival time %d is ready to send its data.\n", records[record_no].player_id, records[record_no].arrival_time);
