@@ -288,10 +288,10 @@ int main(int argc, char** argv) {
         // Send the number of clients to the server
         sendNumberOfClients();
         for (int i = 0; i < num_records; i++) {
-            // printf("Current Time: %d, Pid: %dd, Pid.arrival time: %d\n", current_arrival_time, records[i].player_id, records[i].arrival_time);
-            if (records[i].arrival_time > current_arrival_time) {
-                sleep(records[i].arrival_time - current_arrival_time);
-            }
+            // printf("Current Time: %d, Pid: %d, Pid.arrival time: %d\n", current_arrival_time, records[i].player_id, records[i].arrival_time);
+            // if (records[i].arrival_time > current_arrival_time) {
+            //     sleep(records[i].arrival_time - current_arrival_time);
+            // }
             //Broadcast the current arrival time to all processes
             current_arrival_time = records[i].arrival_time;
             MPI_Bcast(&current_arrival_time, 1, MPI_INT, 0, MPI_COMM_WORLD);
