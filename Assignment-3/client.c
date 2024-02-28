@@ -303,7 +303,7 @@ int main(int argc, char** argv) {
         // Receive the current arrival time from the master process
         MPI_Bcast(&received_arrival_time, 1, MPI_INT, 0, MPI_COMM_WORLD);
         int record_no = world_rank - 1;
-        printf("World Rank: %d, Record No: %d, Arrival Time: %d\n", world_rank, record_no, records[record_no].arrival_time);
+        printf("World Rank: %d, Record No: %d, Arrival Time: %d, Initial Arrival Time: %d\n", world_rank, record_no, records[record_no].arrival_time, received_arrival_time);
         while (records[record_no].arrival_time != received_arrival_time) {
             // Wait until the arrival time matches
             // sleep(records[record_no].arrival_time - received_arrival_time);
