@@ -295,9 +295,8 @@ int main(int argc, char** argv) {
             }
             // Broadcast the current arrival time to all processes
             printf("Turn: %d\n", i);
-            MPI_Bcast(&records[i].arrival_time, 1, MPI_INT, 0, MPI_COMM_WORLD);
             current_arrival_time = records[i].arrival_time;
-           
+            MPI_Bcast(&current_arrival_time, 1, MPI_INT, 0, MPI_COMM_WORLD);
         }
     } else { // Worker processes
         sleep(1); // Add a brief pause for synchronization
@@ -307,6 +306,7 @@ int main(int argc, char** argv) {
         int record_no = world_rank - 1;
         while (records[record_no].arrival_time != received_arrival_time) {
             // Wait until the arrival time matches
+            sleep(records[record_no].arrival_time - received_arrival_time);
             MPI_Bcast(&received_arrival_time, 1, MPI_INT, 0, MPI_COMM_WORLD);
         }
         printf("Player-ID:%d with arrival time %d is ready to send its data.\n", records[record_no].player_id, records[record_no].arrival_time);
