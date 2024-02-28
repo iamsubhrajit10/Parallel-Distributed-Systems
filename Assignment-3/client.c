@@ -290,10 +290,11 @@ int main(int argc, char** argv) {
         for (int i = 0; i < num_records; i++) {
             if (records[i].arrival_time > current_arrival_time) {
                 sleep(records[i].arrival_time - current_arrival_time);
-                current_arrival_time = records[i].arrival_time;
+                
             }
             // Broadcast the current arrival time to all processes
-            MPI_Bcast(&current_arrival_time, 1, MPI_INT, 0, MPI_COMM_WORLD);
+            MPI_Bcast(&records[i].arrival_time, 1, MPI_INT, 0, MPI_COMM_WORLD);
+            current_arrival_time = records[i].arrival_time;
         }
     } else { // Worker processes
         sleep(1); // Add a brief pause for synchronization
