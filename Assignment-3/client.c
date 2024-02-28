@@ -18,8 +18,8 @@
 #define TIMEOUT_SECONDS 300
 
 int num_records;
-char *input_file_name;
-char *output_file_name;
+char *input_file_name = "input.csv";
+char *output_file_name = "output.csv";
 
 
 typedef struct {
@@ -104,7 +104,7 @@ Record* read_csv(const char *filename, int *num_records) {
 
     return records;
 }
-char output_file_name[] = "output.csv"; // Assuming this is a global variable
+
 MPI_Win file_lock; // MPI window for file locking
 
 void write_csv(int player_id, int g_type, int start_time, int end_time, int court_no, int pl1, int pl2, int pl3, int pl4)
