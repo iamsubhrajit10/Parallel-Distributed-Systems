@@ -11,7 +11,7 @@
 #include <semaphore.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
-
+#include <mpi.h>
 
 #define MAX_LINE_SIZE 100
 #define PORT 8080
