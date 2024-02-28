@@ -886,14 +886,14 @@ struct Response *checkDoublesMatchScheduler(int time_stamp)
 void checkMatchScheduler(int time_stamp)
 {
     printf("\nTime:   %d\t", time_stamp);
-    printf("Singles Queue Size:  %d\n", waitingSinglesPlayerCount);
+    printf("Singles Queue Size:  %ld\n", waitingSinglesPlayerCount);
     printf("Singles Queue: ");
     for (int i = 0; i < waitingSinglesPlayerCount; i++)
     {
         printf("%d ", singlesPlayerQueue[i].player_id);
     }
     printf("\n");
-    printf("Doubles Queue Size:  %d\n", waitingDoublesPlayerCount);
+    printf("Doubles Queue Size:  %ld\n", waitingDoublesPlayerCount);
     printf("Doubles Queue: ");
     for (int i = 0; i < waitingDoublesPlayerCount; i++)
     {
@@ -1067,14 +1067,14 @@ struct Response *canFormMatch(struct Player *nPlayer)
         }
         break;
     default:
-        printf("Singles Queue Size:  %d\n", waitingSinglesPlayerCount);
+        printf("Singles Queue Size:  %ld\n", waitingSinglesPlayerCount);
         printf("Singles Queue: ");
         for (int i = 0; i < waitingSinglesPlayerCount; i++)
         {
             printf("%d ", singlesPlayerQueue[i].player_id);
         }
         printf("\n");
-        printf("Doubles Queue Size:  %d\n", waitingDoublesPlayerCount);
+        printf("Doubles Queue Size:  %ld\n", waitingDoublesPlayerCount);
         printf("Doubles Queue: ");
         for (int i = 0; i < waitingDoublesPlayerCount; i++)
         {
@@ -1083,14 +1083,14 @@ struct Response *canFormMatch(struct Player *nPlayer)
         printf("\n");
         return NULL;
     }
-    printf("\nSingles Queue Size:  %d\n", waitingSinglesPlayerCount);
+    printf("\nSingles Queue Size:  %ld\n", waitingSinglesPlayerCount);
     printf("Singles Queue: ");
     for (int i = 0; i < waitingSinglesPlayerCount; i++)
     {
         printf("%d ", singlesPlayerQueue[i].player_id);
     }
     printf("\n");
-    printf("Doubles Queue Size:  %d\n", waitingDoublesPlayerCount);
+    printf("Doubles Queue Size:  %ld\n", waitingDoublesPlayerCount);
     printf("Doubles Queue: ");
     for (int i = 0; i < waitingDoublesPlayerCount; i++)
     {
@@ -1223,7 +1223,7 @@ int main()
         printf("[-]Error in connection.\n");
         exit(1);
     }
-    printf("[+]Server Socket is created for thread.\n",);
+    printf("[+]Server Socket is created for thread.\n");
     memset(&localServerAddr, '\0', sizeof(localServerAddr));
     localServerAddr.sin_family = AF_INET;
     localServerAddr.sin_port = htons(PORT);
@@ -1235,7 +1235,7 @@ int main()
         printf("[-]Error in binding. Maybe earlier socket is still running. Wait for some time or use different PORT\n");
         exit(1);
     }
-    printf("[+]Bind to port\n", PORT);
+    printf("[+]Bind to port\n");
     if (ret < 0)
     {
         printf("[-]Error in binding.\n");
