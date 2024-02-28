@@ -295,6 +295,7 @@ int main(int argc, char** argv) {
             //Broadcast the current arrival time to all processes
             current_arrival_time = records[i].arrival_time;
             MPI_Bcast(&current_arrival_time, 1, MPI_INT, 0, MPI_COMM_WORLD);
+            usleep(1000);
         }
     } else { // Worker processes
         sleep(1); // Add a brief pause for synchronization
