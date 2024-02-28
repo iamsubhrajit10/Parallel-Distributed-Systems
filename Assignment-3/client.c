@@ -275,8 +275,7 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    // Send the number of clients to the server
-    sendNumberOfClients();
+    
 
     // Create a window for file locking
     MPI_Win_create(NULL, 0, 1, MPI_INFO_NULL, MPI_COMM_WORLD, &file_lock);
@@ -286,6 +285,8 @@ int main(int argc, char** argv) {
     
     int current_arrival_time = records[0].arrival_time;
     if (world_rank == 0) { // Master process
+        // Send the number of clients to the server
+        sendNumberOfClients();
         for (int i = 0; i < num_records; i++) {
             if (records[i].arrival_time > current_arrival_time) {
                 sleep(records[i].arrival_time - current_arrival_time);
