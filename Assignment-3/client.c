@@ -307,13 +307,15 @@ int main(int argc, char** argv) {
         while (records[record_no].arrival_time > received_arrival_time) {
             // Wait until the arrival time matches
             // sleep(records[record_no].arrival_time - received_arrival_time);
-            MPI_Bcast(&received_arrival_time, 1, MPI_INT, 0, MPI_COMM_WORLD);
-            printf("World Rank: %d, Record No: %d, Arrival Time: %d, Received Arrival Time: %d\n", world_rank, record_no, records[record_no].arrival_time, received_arrival_time);
+            // MPI_Bcast(&received_arrival_time, 1, MPI_INT, 0, MPI_COMM_WORLD);
+            // printf("World Rank: %d, Record No: %d, Arrival Time: %d, Received Arrival Time: %d\n", world_rank, record_no, records[record_no].arrival_time, received_arrival_time);
+            sleep(records[record_no].arrival_time - received_arrival_time);
         }
         printf("Player-ID:%d with arrival time %d is ready to send its data.\n", records[record_no].player_id, records[record_no].arrival_time);
         int newSock = sendRequest(records[record_no].player_id, records[record_no].arrival_time, records[record_no].gender, records[record_no].preference);
         printf("Player-ID:%d sent its data.\n", records[record_no].player_id);
         receiveResponse(newSock, records[record_no].player_id);
+        MPI_Barrier(MPI_COMM_WORLD);
     }
     MPI_Barrier(MPI_COMM_WORLD);
     MPI_Win_free(&file_lock);
