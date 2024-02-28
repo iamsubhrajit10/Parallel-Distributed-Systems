@@ -315,7 +315,7 @@ int main(int argc, char** argv) {
         printf("Player-ID:%d sent its data.\n", records[record_no].player_id);
         receiveResponse(newSock, records[record_no].player_id);
     }
-
+    MPI_Barrier(MPI_COMM_WORLD);
     MPI_Win_free(&file_lock);
     MPI_Finalize();
     free(records);
