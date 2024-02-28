@@ -45,16 +45,14 @@ Record* read_csv(const char *filename, int *num_records) {
             count++;
         }
     }
-    count--;
-    Record *records;
-    // Allocate memory for the records
-    if(count>0){
-        records = malloc(sizeof(Record) * count);
-        if (records == NULL) {
-            printf("Memory allocation failed.\n");
-            fclose(file);
-            return NULL;
-        }
+    count--; // Subtract one for the header line
+
+    // Allocate memory for the records plus one for the dummy record
+    Record *records = malloc(sizeof(Record) * (count + 1));
+    if (records == NULL) {
+        printf("Memory allocation failed.\n");
+        fclose(file);
+        return NULL;
     }
 
     // Go back to the start of the file
@@ -76,12 +74,10 @@ Record* read_csv(const char *filename, int *num_records) {
 
         // Parse req_timestamp
         token = strtok(line, ",");
-
         record.player_id = atoi(token);
 
         // Parse req_type
         token = strtok(NULL, ",");
-
         record.arrival_time=atoi(token);
 
         // Parse room_no
@@ -97,10 +93,16 @@ Record* read_csv(const char *filename, int *num_records) {
         i++;
     }
 
+    // Add a dummy record
+    records[i].player_id = 0;
+    records[i].arrival_time = records[i-1].arrival_time + 45; // Assuming arrival_time is in minutes
+    records[i].gender = 'X';
+    records[i].preference = 'X';
+
     fclose(file);
 
-    // Return the number of records
-    *num_records = count;
+    // Return the number of records (including the dummy record)
+    *num_records = count + 1;
 
     return records;
 }
