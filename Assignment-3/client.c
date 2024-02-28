@@ -200,7 +200,7 @@ void receiveResponse(int clientSocket, int player_id){
     if (recvStatus <= 0) {
         // Either an error or the client disconnected
         if (recvStatus == 0) {
-            printf("Player-ID %d got disconnected.\n",player_id,clientSocket);
+            printf("Player-ID %d got disconnected.\n",player_id);
         } else {
             perror("Error in receiving data");
         }
