@@ -1243,7 +1243,7 @@ int main()
     }
     printf("[+]Bind to port %d\n", PORT);
 
-    if (listen(newSocket, NUM_CLIENTS) == 0)
+    if (listen(newSocket, NUM_CLIENTS*2) == 0)
     {
         printf("[+]Listening....\n");
     }
