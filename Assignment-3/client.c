@@ -102,7 +102,7 @@ Record* read_csv(const char *filename, int *num_records) {
     fclose(file);
 
     // Return the number of records (including the dummy record)
-    *num_records = count + 1;
+    *num_records = i + 1;
 
     return records;
 }
