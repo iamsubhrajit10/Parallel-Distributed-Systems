@@ -291,10 +291,10 @@ int main(int argc, char** argv) {
             // printf("Current Time: %d, Pid: %dd, Pid.arrival time: %d\n", current_arrival_time, records[i].player_id, records[i].arrival_time);
             if (records[i].arrival_time > current_arrival_time) {
                 sleep(records[i].arrival_time - current_arrival_time);
+                current_arrival_time = records[i].arrival_time;
             }
             //Broadcast the current arrival time to all processes
-            printf("Turn: %d\n", i);
-            current_arrival_time = records[i].arrival_time;
+            
             MPI_Bcast(&current_arrival_time, 1, MPI_INT, 0, MPI_COMM_WORLD);
         }
     } else { // Worker processes
