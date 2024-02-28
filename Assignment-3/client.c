@@ -274,6 +274,12 @@ int main(int argc, char** argv) {
         MPI_Finalize();
         return 1;
     }
+    FILE *file = fopen(output_file_name, "w");
+    if (file == NULL)
+    {
+        printf("Error opening file %s for writing.\n", output_file_name);
+        return 0;
+    }
 
     
 
