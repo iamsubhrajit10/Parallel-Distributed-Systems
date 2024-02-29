@@ -295,7 +295,7 @@ void receiveResponse(int clientSocket, int player_id){
                 strcat(all_messages, new_message);
                 MPI_Send(congrats_msg, sizeof(congrats_msg), MPI_CHAR, winning_player_id[1], 0, MPI_COMM_WORLD);
                 printf("%d, %d To %d, %d: %s\n", player_id,player_id,winning_player_id[1],winning_player_id[1],congrats_msg);
-                sprintf(new_messages, "%d, %d To %d, %d: %s\n", player_id,player_id,winning_player_id[1],winning_player_id[1],congrats_msg);
+                sprintf(new_message, "%d, %d To %d, %d: %s\n", player_id,player_id,winning_player_id[1],winning_player_id[1],congrats_msg);
                 strcat(all_messages, new_message);
                 MPI_Recv(recv_msg, sizeof(recv_msg), MPI_CHAR, winning_player_id[1], 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 printf("%d, %d To %d, %d: %s\n", winning_player_id[1],winning_player_id[1],player_id,player_id,recv_msg);
