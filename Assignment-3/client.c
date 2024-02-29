@@ -203,6 +203,7 @@ void receiveResponse(int clientSocket, int player_id){
     char all_messages[4096];
     char new_message[256];
     bzero(buffer, sizeof(buffer));
+    bzero(all_messages, sizeof(all_messages));
     ssize_t recvStatus = recv(clientSocket, buffer, sizeof(buffer), 0);
     if (recvStatus <= 0) {
         // Either an error or the client disconnected
