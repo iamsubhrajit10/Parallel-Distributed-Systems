@@ -417,7 +417,8 @@ int main(int argc, char** argv) {
             // Wait until the arrival time matches
             if (record_no==num_records-1){
                 //printf("Player-ID:%d with arrival time %d is ready to send its data...\n", records[num_records-1].player_id, records[num_records-1].arrival_time);
-                sleep(records[num_records-2].arrival_time - records[0].arrival_time+10);
+                printf("Waiting for processing of all the requests to be completed...\n");
+                sleep(records[num_records-2].arrival_time - records[0].arrival_time+20);
             } //Do nothing
             else if (records[record_no].arrival_time > received_arrival_time){
                 sleep(records[record_no].arrival_time - received_arrival_time);
