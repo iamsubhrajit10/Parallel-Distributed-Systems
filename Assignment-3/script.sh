@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Read the CSV file
-csv_file="$pwd/input.csv" 
+csv_file="input.csv" 
 rows=$(tail -n +2 "$csv_file" | wc -l)
 
 # Calculate the number of processes
