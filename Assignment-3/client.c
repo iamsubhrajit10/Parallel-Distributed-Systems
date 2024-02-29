@@ -280,6 +280,7 @@ void receiveResponse(int clientSocket, int player_id){
                 printf("Player-ID %d sent a congratulatory message to Player-ID %d.\n", player_id, winning_player_id[1]);
                 MPI_Recv(recv_msg, sizeof(recv_msg), MPI_CHAR, winning_player_id[1], 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 printf("Player-ID %d received a thank you message from Player-ID %d.\n", player_id, winning_player_id[1]);
+            }
         }
         if (g_type == 0 || g_type == 1 || g_type == -1){
             write_csv(player_id,g_type,game_start_time,game_end_time,court_no,pl1,pl2,pl3,pl4);
@@ -288,6 +289,7 @@ void receiveResponse(int clientSocket, int player_id){
     // Close the socket
     close(clientSocket);
 }
+
 void sendNumberOfClients(){
     int clientSocket;
     struct sockaddr_in serverAddr;
