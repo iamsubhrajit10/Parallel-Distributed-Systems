@@ -16,4 +16,4 @@ sudo ./server &
 mpicc -o client client.c
 
 # Run the client program using mpirun
-mpirun -np "$N" ./client
+mpirun -np "$N" --oversubscribe ./client
