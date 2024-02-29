@@ -109,7 +109,7 @@ Record* read_csv(const char *filename, int *num_records) {
 
 MPI_Win file_lock; // MPI window for file locking
 
-void write_csv(int player_id, int g_type, int start_time, int end_time, int court_no, int pl1, int pl2, int pl3, int pl4)
+void write_csv(int player_id, int g_type, int start_time, int end_time, int court_no, int pl1, int pl2, int pl3, int pl4, char* all_messages)
 {
     // Lock the window for exclusive access to the file
     MPI_Win_lock(MPI_LOCK_EXCLUSIVE, 0, 0, file_lock);
@@ -125,11 +125,14 @@ void write_csv(int player_id, int g_type, int start_time, int end_time, int cour
     if (g_type == -1){
         fprintf(file, "%d,%d,%d,\n",pl1,-1,end_time);
     } 
-    else if (g_type == 0)
+    else if (g_type == 0){
         fprintf(file, "%d,%d,%d,%d,%d,%d,\n", player_id,start_time, end_time, court_no, pl1, pl2);
-    else if(g_type==1)
+        fprintf(file, "%s", all_messages);
+    }
+    else if(g_type==1){
         fprintf(file, "%d,%d,%d,%d,%d,%d,%d,%d,\n",player_id, start_time, end_time, court_no, pl1, pl2, pl3, pl4);
-
+        fprintf(file, "%s", all_messages);
+    }
     fclose(file);
 
     // Release the lock on the file
@@ -197,6 +200,7 @@ int sendRequest(int player_id, int arrival_time, char gender, char preference) {
 
 void receiveResponse(int clientSocket, int player_id){
     char buffer[1024];
+    char all_messages[4096];
     bzero(buffer, sizeof(buffer));
     ssize_t recvStatus = recv(clientSocket, buffer, sizeof(buffer), 0);
     if (recvStatus <= 0) {
@@ -239,13 +243,17 @@ void receiveResponse(int clientSocket, int player_id){
             if (player_id == loosing_player_id[0]) {
                 MPI_Send(congrats_msg, sizeof(congrats_msg), MPI_CHAR, winning_player_id[0], 0, MPI_COMM_WORLD);
                 printf("%d, %d To %d, %d: %s\n", player_id,player_id,winning_player_id[0],winning_player_id[0],congrats_msg);
+                fprintf(all_messages, "%d, %d To %d, %d: %s\n", player_id,player_id,winning_player_id[0],winning_player_id[0],congrats_msg);
                 MPI_Recv(recv_msg, sizeof(recv_msg), MPI_CHAR, winning_player_id[0], 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 printf("%d, %d To %d, %d: %s\n", winning_player_id[0],winning_player_id[0],player_id,player_id,recv_msg);
+                fprintf(all_messages, "%d, %d To %d, %d: %s\n", winning_player_id[0],winning_player_id[0],player_id,player_id,recv_msg);
             } else if (player_id == winning_player_id[0]) {
                 MPI_Recv(recv_msg, sizeof(recv_msg), MPI_CHAR, loosing_player_id[0], 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 printf("%d, %d To %d, %d: %s\n", loosing_player_id[0],loosing_player_id[0],player_id,player_id,recv_msg);
+                fprintf(all_messages, "%d, %d To %d, %d: %s\n", loosing_player_id[0],loosing_player_id[0],player_id,player_id,recv_msg);
                 MPI_Send(thank_you_msg, sizeof(thank_you_msg), MPI_CHAR, loosing_player_id[0], 0, MPI_COMM_WORLD);
                 printf("%d, %d To %d, %d: %s\n", player_id,player_id,loosing_player_id[0],loosing_player_id[0],thank_you_msg);
+                fprintf(all_messages, "%d, %d To %d, %d: %s\n", player_id,player_id,loosing_player_id[0],loosing_player_id[0],thank_you_msg);
             }
         }
         else if (g_type==1){
@@ -274,26 +282,33 @@ void receiveResponse(int clientSocket, int player_id){
             if (player_id == loosing_player_id[0] || player_id == loosing_player_id[1]) {
                 MPI_Send(congrats_msg, sizeof(congrats_msg), MPI_CHAR, winning_player_id[0], 0, MPI_COMM_WORLD);
                 printf("%d, %d To %d, %d: %s\n", player_id,player_id,winning_player_id[0],winning_player_id[0],congrats_msg);
+                fprintf(all_messages, "%d, %d To %d, %d: %s\n", player_id,player_id,winning_player_id[0],winning_player_id[0],congrats_msg);
                 MPI_Recv(recv_msg, sizeof(recv_msg), MPI_CHAR, winning_player_id[0], 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 printf("%d, %d To %d, %d: %s\n", winning_player_id[0],winning_player_id[0],player_id,player_id,recv_msg);
+                fprintf(all_messages, "%d, %d To %d, %d: %s\n", winning_player_id[0],winning_player_id[0],player_id,player_id,recv_msg);
                 MPI_Send(congrats_msg, sizeof(congrats_msg), MPI_CHAR, winning_player_id[1], 0, MPI_COMM_WORLD);
                 printf("%d, %d To %d, %d: %s\n", player_id,player_id,winning_player_id[1],winning_player_id[1],congrats_msg);
+                fprintf(all_messages, "%d, %d To %d, %d: %s\n", player_id,player_id,winning_player_id[1],winning_player_id[1],congrats_msg);
                 MPI_Recv(recv_msg, sizeof(recv_msg), MPI_CHAR, winning_player_id[1], 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 printf("%d, %d To %d, %d: %s\n", winning_player_id[1],winning_player_id[1],player_id,player_id,recv_msg);
+                fprintf(all_messages, "%d, %d To %d, %d: %s\n", winning_player_id[1],winning_player_id[1],player_id,player_id,recv_msg);
             } else if(player_id == winning_player_id[0] || player_id == winning_player_id[1]){
                 MPI_Recv(recv_msg, sizeof(recv_msg), MPI_CHAR, loosing_player_id[0], 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 printf("%d, %d To %d, %d: %s\n", loosing_player_id[0],loosing_player_id[0],player_id,player_id,recv_msg);
+                fprintf(all_messages, "%d, %d To %d, %d: %s\n", loosing_player_id[0],loosing_player_id[0],player_id,player_id,recv_msg);
                 MPI_Send(thank_you_msg, sizeof(thank_you_msg), MPI_CHAR, loosing_player_id[0], 0, MPI_COMM_WORLD);
                 printf("%d, %d To %d, %d: %s\n", player_id,player_id,loosing_player_id[0],loosing_player_id[0],thank_you_msg);
+                fprintf(all_messages, "%d, %d To %d, %d: %s\n", player_id,player_id,loosing_player_id[0],loosing_player_id[0],thank_you_msg);
                 MPI_Recv(recv_msg, sizeof(recv_msg), MPI_CHAR, loosing_player_id[1], 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 printf("%d, %d To %d, %d: %s\n", loosing_player_id[1],loosing_player_id[1],player_id,player_id,recv_msg);
+                fprintf(all_messages, "%d, %d To %d, %d: %s\n", loosing_player_id[1],loosing_player_id[1],player_id,player_id,recv_msg);
                 MPI_Send(thank_you_msg, sizeof(thank_you_msg), MPI_CHAR, loosing_player_id[1], 0, MPI_COMM_WORLD);
                 printf("%d, %d To %d, %d: %s\n", player_id,player_id,loosing_player_id[1],loosing_player_id[1],thank_you_msg);
-
+                fprintf(all_messages, "%d, %d To %d, %d: %s\n", player_id,player_id,loosing_player_id[1],loosing_player_id[1],thank_you_msg);
             }
         }
         if (g_type == 0 || g_type == 1 || g_type == -1){
-            write_csv(player_id,g_type,game_start_time,game_end_time,court_no,pl1,pl2,pl3,pl4);
+            write_csv(player_id,g_type,game_start_time,game_end_time,court_no,pl1,pl2,pl3,pl4,all_messages);
         } 
     }
     // Close the socket
