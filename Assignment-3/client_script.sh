@@ -7,11 +7,6 @@ rows=$(tail -n +2 "$csv_file" | wc -l)
 # Calculate the number of processes
 N=$((rows + 2))
 
-# Compile the server program
-gcc -o server server.c -fopenmp
-# Run the server program 
-xterm -e "sudo ./server"
-
 # Compile the client.c file
 mpicc -o client client.c
 
