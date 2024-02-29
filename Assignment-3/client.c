@@ -213,7 +213,7 @@ void receiveResponse(int clientSocket, int player_id){
             return;
         }
         int g_type, game_start_time, game_end_time,court_no,pl1,pl2,pl3,pl4,winner_id;
-        sscanf(buffer, "%d %d %d %d %d %d %d %d %d", &g_type,&game_start_time,&game_end_time,&court_no,&pl1,&pl2,&pl3,&pl4,winner_id);
+        sscanf(buffer, "%d %d %d %d %d %d %d %d %d", &g_type,&game_start_time,&game_end_time,&court_no,&pl1,&pl2,&pl3,&pl4,&winner_id);
         
         if (g_type == 0 || g_type == 1 || g_type == -1){
             write_csv(player_id,g_type,game_start_time,game_end_time,court_no,pl1,pl2,pl3,pl4);
