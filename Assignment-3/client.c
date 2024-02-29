@@ -238,14 +238,14 @@ void receiveResponse(int clientSocket, int player_id){
 
             if (player_id == loosing_player_id[0]) {
                 MPI_Send(congrats_msg, sizeof(congrats_msg), MPI_CHAR, winning_player_id[0], 0, MPI_COMM_WORLD);
-                printf("Player-ID %d sent a congratulatory message to Player-ID %d.\n", player_id, winning_player_id[0]);
+                printf("%d, %d To %d, %d: %s\n", player_id,player_id,winning_player_id[0],winning_player_id[0],congrats_msg);
                 MPI_Recv(recv_msg, sizeof(recv_msg), MPI_CHAR, winning_player_id[0], 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-                printf("Player-ID %d received a thank you message from Player-ID %d.\n", player_id, winning_player_id[0]);
+                printf("%d, %d To %d, %d: %s\n", winning_player_id[0],winning_player_id[0],player_id,player_id,recv_msg);
             } else if (player_id == winning_player_id[0]) {
                 MPI_Recv(recv_msg, sizeof(recv_msg), MPI_CHAR, loosing_player_id[0], 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-                printf("Player-ID %d received a congratulatory message from Player-ID %d.\n", player_id, loosing_player_id[0]);
+                printf("%d, %d To %d, %d: %s\n", loosing_player_id[0],loosing_player_id[0],player_id,player_id,recv_msg);
                 MPI_Send(thank_you_msg, sizeof(thank_you_msg), MPI_CHAR, loosing_player_id[0], 0, MPI_COMM_WORLD);
-                printf("Player-ID %d sent a thank you message to Player-ID %d.\n", player_id, loosing_player_id[0]);
+                printf("%d, %d To %d, %d: %s\n", player_id,player_id,loosing_player_id[0],loosing_player_id[0],thank_you_msg);
             }
         }
         else if (g_type==1){
