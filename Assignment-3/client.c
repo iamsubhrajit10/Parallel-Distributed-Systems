@@ -280,6 +280,13 @@ void receiveResponse(int clientSocket, int player_id){
                 printf("Player-ID %d sent a congratulatory message to Player-ID %d.\n", player_id, winning_player_id[1]);
                 MPI_Recv(recv_msg, sizeof(recv_msg), MPI_CHAR, winning_player_id[1], 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 printf("Player-ID %d received a thank you message from Player-ID %d.\n", player_id, winning_player_id[1]);
+            } else if(player_id == winning_player_id[0] || player_id == winning_player_id[1]){
+                MPI_Recv(recv_msg, sizeof(recv_msg), MPI_CHAR, loosing_player_id[0], 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                printf("Player-ID %d received a congratulatory message from Player-ID %d.\n", player_id, loosing_player_id[0]);
+                MPI_Send(thank_you_msg, sizeof(thank_you_msg), MPI_CHAR, loosing_player_id[0], 0, MPI_COMM_WORLD);
+                printf("Player-ID %d sent a thank you message to Player-ID %d.\n", player_id, loosing_player_id[0]);
+                MPI_Recv(recv_msg, sizeof(recv_msg), MPI_CHAR, loosing_player_id[1], 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                printf("Player-ID %d received a congratulatory message from Player-ID %d.\n", player_id, loosing_player_id[1]);
             }
         }
         if (g_type == 0 || g_type == 1 || g_type == -1){
@@ -379,7 +386,7 @@ int main(int argc, char** argv) {
             // Wait until the arrival time matches
             if (record_no==num_records-1){
                 //printf("Player-ID:%d with arrival time %d is ready to send its data...\n", records[num_records-1].player_id, records[num_records-1].arrival_time);
-                sleep(records[num_records-2].arrival_time - records[0].arrival_time+1);
+                sleep(records[num_records-2].arrival_time - records[0].arrival_time+10);
             } //Do nothing
             else if (records[record_no].arrival_time > received_arrival_time){
                 sleep(records[record_no].arrival_time - received_arrival_time);
