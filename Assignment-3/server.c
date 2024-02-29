@@ -321,15 +321,19 @@ void checkMatchCompletions(int time_stamp){
         {
             
             int g_type, pl1, pl2, pl3, pl4;
-            // assigning winner
+            
             
             if (courts_status.game_running[court_indices[i]] == 0){
+                    // assigning winner for singles match
+                    srand(time(NULL));
                     int winner = rand() % 2;
                     char msg[100];
                     snprintf(msg, sizeof(msg),"%d %d %d %d %d %d %d %d %d",0,courts_status.last_game_start_time[court_indices[i]],courts_status.last_game_end_time[court_indices[i]],court_indices[i]+1,courts_status.player_ids[court_indices[i]][0],courts_status.player_ids[court_indices[i]][1],-1,-1,winner+1);
                     send(courts_status.player_sockets[court_indices[i]][0], msg, strlen(msg) + 1, 0);
                     send(courts_status.player_sockets[court_indices[i]][1], msg, strlen(msg) + 1, 0);
             } else if (courts_status.game_running[court_indices[i]] == 1){
+                    // assigning winner for doubles match
+                    srand(time(NULL));
                     int winner = rand() % 4;
                     char msg[100];
                     snprintf(msg, sizeof(msg),"%d %d %d %d %d %d %d %d %d",1,courts_status.last_game_start_time[court_indices[i]],courts_status.last_game_end_time[court_indices[i]],court_indices[i]+1,courts_status.player_ids[court_indices[i]][0],courts_status.player_ids[court_indices[i]][1],courts_status.player_ids[court_indices[i]][2],courts_status.player_ids[court_indices[i]][3],winner);
@@ -1174,26 +1178,6 @@ void handleClient(int newSocket)
             }
             
             struct Response *response = canFormMatch(newPlayer);
-            // char successMsg[1024];
-            // if (response != NULL)
-            // {
-            //     if (response->court_no >= 0)
-            //     {
-            //          // Loop until the condition is met
-            //         while (courts_status.last_game_end_time[response->court_no] != server_time_stamp) {
-            //             usleep(10000); // Sleep for 10 milliseconds before checking again
-            //         }
-
-            //         if (response->game_type == 0)
-            //         {
-            //             snprintf(successMsg, sizeof(successMsg),"%d %d %d %d %d %d %d %d",0, newPlayer->arrival_time, courts_status.last_game_end_time[response->court_no], response->court_no + 1, response->matchedPlayer[0].player_id, newPlayer->player_id,-1,-1);
-            //         }
-            //         else
-            //         {   snprintf(successMsg, sizeof(successMsg),"%d %d %d %d %d %d %d %d",1, newPlayer->arrival_time, courts_status.last_game_end_time[response->court_no], response->court_no + 1, response->matchedPlayer[0].player_id, response->matchedPlayer[1].player_id, response->matchedPlayer[2].player_id, newPlayer->player_id);
-            //         }
-            //         bzero(successMsg,sizeof(successMsg));
-            //     }
-            // }
             bzero(buffer, sizeof(buffer));
             break;
         }
