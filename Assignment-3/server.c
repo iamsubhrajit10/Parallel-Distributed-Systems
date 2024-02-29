@@ -321,8 +321,7 @@ void checkMatchCompletions(int time_stamp){
         {
             
             int g_type, pl1, pl2, pl3, pl4;
-            
-            
+
             if (courts_status.game_running[court_indices[i]] == 0){
                     // assigning winner for singles match
                     srand(time(NULL));
