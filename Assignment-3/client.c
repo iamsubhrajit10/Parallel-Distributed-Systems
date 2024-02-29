@@ -214,7 +214,25 @@ void receiveResponse(int clientSocket, int player_id){
         }
         int g_type, game_start_time, game_end_time,court_no,pl1,pl2,pl3,pl4,winner_id;
         sscanf(buffer, "%d %d %d %d %d %d %d %d %d", &g_type,&game_start_time,&game_end_time,&court_no,&pl1,&pl2,&pl3,&pl4,&winner_id);
-        
+        //Using MPI, the loser(s) should send a congratulatory message to the winner(s), and the winner(s) should send a thank you message back.
+        if (g_type == 0) {
+            int loser_id = (winner_id == pl1) ? pl2 : pl1;
+            char congrats_msg[] = "Congratulations on your win!";
+            char thank_you_msg[] = "Thank you for the game!";
+            char recv_msg[30];
+
+            if (player_id == loser_id) {
+                MPI_Send(congrats_msg, sizeof(congrats_msg), MPI_CHAR, winner_id, 0, MPI_COMM_WORLD);
+                printf("Player-ID %d sent a congratulatory message to Player-ID %d.\n", player_id, winner_id);
+                MPI_Recv(recv_msg, sizeof(recv_msg), MPI_CHAR, winner_id, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                printf("Player-ID %d received a thank you message from Player-ID %d.\n", player_id, winner_id);
+            } else if (player_id == winner_id) {
+                MPI_Recv(recv_msg, sizeof(recv_msg), MPI_CHAR, loser_id, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                printf("Player-ID %d received a congratulatory message from Player-ID %d.\n", player_id, loser_id);
+                MPI_Send(thank_you_msg, sizeof(thank_you_msg), MPI_CHAR, loser_id, 0, MPI_COMM_WORLD);
+                printf("Player-ID %d sent a thank you message to Player-ID %d.\n", player_id, loser_id);
+            }
+        }
         if (g_type == 0 || g_type == 1 || g_type == -1){
             write_csv(player_id,g_type,game_start_time,game_end_time,court_no,pl1,pl2,pl3,pl4);
         } 
@@ -296,11 +314,6 @@ int main(int argc, char** argv) {
         // Send the number of clients to the server
         sendNumberOfClients();
         for (int i = 0; i < num_records; i++) {
-            // printf("Current Time: %d, Pid: %d, Pid.arrival time: %d\n", current_arrival_time, records[i].player_id, records[i].arrival_time);
-            // if (records[i].arrival_time > current_arrival_time) {
-            //     sleep(records[i].arrival_time - current_arrival_time);
-            // }
-            //Broadcast the current arrival time to all processes
             current_arrival_time = records[i].arrival_time;
             MPI_Bcast(&current_arrival_time, 1, MPI_INT, 0, MPI_COMM_WORLD);
             sleep(1); // Add a brief pause for synchronization
