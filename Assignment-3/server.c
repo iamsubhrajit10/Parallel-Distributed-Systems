@@ -1171,7 +1171,7 @@ void handleClient(int newSocket)
                 sprintf(successMsg, "All client requests received by server.");
                 send(newSocket,successMsg, strlen(successMsg) + 1, 0);
                 printf("Exiting...\n");
-                sleep(2);
+                sleep(5);
                 close(sockfd);
                 atomic_store(&ALL_MATCHES_DONE, 1); // Set the flag to true
                 exit(0);
