@@ -244,7 +244,7 @@ void receiveResponse(int clientSocket, int player_id){
             } else if (player_id == winning_player_id[0]) {
                 MPI_Recv(recv_msg, sizeof(recv_msg), MPI_CHAR, loosing_player_id[0], 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 printf("Player-ID %d received a congratulatory message from Player-ID %d.\n", player_id, loosing_player_id[0]);
-                MPI_Send(thank_you_msg, sizeof(thank_you_msg), MPI_CHAR, loser_id, 0, MPI_COMM_WORLD);
+                MPI_Send(thank_you_msg, sizeof(thank_you_msg), MPI_CHAR, loosing_player_id[0], 0, MPI_COMM_WORLD);
                 printf("Player-ID %d sent a thank you message to Player-ID %d.\n", player_id, loosing_player_id[0]);
             }
         }
