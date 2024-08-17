@@ -1,4 +1,4 @@
-# 	TennisServe: A Parallel Game Matching Server with OpenMP & MPI Tennis Game Request Server using OpenMP and MPI
+# 	TennisServe: A Parallel Game Matching Server with OpenMP & MPI
 
 There are  **4 Tennis courts** and players arrive randomly to play.
 
