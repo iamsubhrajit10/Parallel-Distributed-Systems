@@ -1,7 +1,11 @@
 # 	TennisServe: A Parallel Game Matching Server with OpenMP & MPI
+A tennis game matching server simulation, where multiple players sends requests to the game server for games: singles/doubles, male/female/mixed. The server, based on availability of the limited tennis courts, i.e. 4, matches the players' requests, continuosly.   
+
+The tennis server utilizes OpenMP Threads to handle client requests, and on the other end, players communicate with each other with MPI calls.
+
+Below, the simulation setup is described:
 
 There are  **4 Tennis courts** and players arrive randomly to play.
-
 
 The input for the program must be taken from a .csv file.   
 ## Input format
